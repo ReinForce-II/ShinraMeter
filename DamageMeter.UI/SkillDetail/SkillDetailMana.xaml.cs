@@ -21,35 +21,15 @@ namespace DamageMeter.UI.SkillDetail
             var chained = skill.IsChained;
             var hit = skill.Detail;
 
-            if (skill.IsHotDot)
-            {
-                hit = LP.Mot;
-            }
-            if (hit != null)
-            {
-                LabelName.Content = hit;
-            }
-            if (chained == true)
-            {
-                LabelName.Content += " " + LP.Chained;
-            }
+            if (skill.IsHotDot) { hit = LP.Mot; }
+            if (hit != null) { LabelName.Content = hit; }
+            if (chained == true) { LabelName.Content += " " + LP.Chained; }
 
             LabelName.ToolTip = skill.Id;
             LabelNumberHitMana.Content = skillAggregate.Hits(skill.Id);
             LabelTotalMana.Content = FormatHelpers.Instance.FormatValue(skillAggregate.Amount(skill.Id));
         }
 
-        private void MoveWindow(object sender, MouseButtonEventArgs e)
-        {
-            var w = Window.GetWindow(this);
-            try
-            {
-                w?.DragMove();
-            }
-            catch
-            {
-                Console.WriteLine(@"Exception move");
-            }
-        }
+        private void DragWindow(object sender, MouseButtonEventArgs e) { ((ClickThrouWindow)Window.GetWindow(this))?.Move(sender, e); }
     }
 }

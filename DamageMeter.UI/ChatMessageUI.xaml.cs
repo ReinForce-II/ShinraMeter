@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using Data;
 using System.Windows.Media;
+using Data;
+using Tera.Game.Messages;
 
 namespace DamageMeter.UI
 {
@@ -22,18 +23,13 @@ namespace DamageMeter.UI
         {
             Sender.Content = message.Sender;
             Message.Text = message.Text;
-            if (message.ChatType == Chat.ChatType.Normal)
-            {
-                Channel.Content = message.Channel;
-            }else
-            {
-                Channel.Content = message.ChatType;
-            }
+            if (message.ChatType == Chat.ChatType.Normal) { Channel.Content = message.Channel; }
+            else { Channel.Content = message.ChatType; }
 
             Time.Content = message.Time;
 
             Channel.Content = "[" + Channel.Content + "]";
-            
+
             Brush foreground = null;
             switch (message.ChatType)
             {
@@ -41,32 +37,33 @@ namespace DamageMeter.UI
                     foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.WhisperColor);
                     break;
                 case Chat.ChatType.Normal:
-                    switch (message.Channel) {
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Alliance:                   
+                    switch (message.Channel)
+                    {
+                        case S_CHAT.ChannelEnum.Alliance:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.AllianceColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Area:
+                        case S_CHAT.ChannelEnum.Area:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.AreaColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.General:
+                        case S_CHAT.ChannelEnum.General:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.GeneralColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Group:
+                        case S_CHAT.ChannelEnum.Group:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.GroupColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Guild:
+                        case S_CHAT.ChannelEnum.Guild:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.GuildColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Raid:
+                        case S_CHAT.ChannelEnum.Raid:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.RaidColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Say:
+                        case S_CHAT.ChannelEnum.Say:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.SayColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Trading:
+                        case S_CHAT.ChannelEnum.Trading:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.TradingColor);
                             break;
-                        case Tera.Game.Messages.S_CHAT.ChannelEnum.Emotes:
+                        case S_CHAT.ChannelEnum.Emotes:
                             foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.EmotesColor);
                             break;
                         default:
@@ -77,14 +74,11 @@ namespace DamageMeter.UI
                 case Chat.ChatType.PrivateChannel:
                     foreground = new SolidColorBrush(BasicTeraData.Instance.WindowData.PrivateChannelColor);
                     break;
-
-
             }
 
             Sender.Foreground = foreground;
             Channel.Foreground = foreground;
             Message.Foreground = foreground;
-
         }
 
         private void Copy_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -92,18 +86,7 @@ namespace DamageMeter.UI
             Clipboard.SetDataObject(Message.Text);
         }
 
-        private void DragWindow(object sender, MouseButtonEventArgs e)
-        {
-            var w = Window.GetWindow(this);
-            try
-            {
-                w?.DragMove();
-            }
-            catch
-            {
-                Console.WriteLine(@"Exception move");
-            }
-        }
+        private void DragWindow(object sender, MouseButtonEventArgs e) { ((ClickThrouWindow)Window.GetWindow(this))?.Move(sender, e); }
 
         private void Sender_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

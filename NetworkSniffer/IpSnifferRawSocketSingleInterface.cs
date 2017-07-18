@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Data;
 using PacketDotNet;
 using PacketDotNet.Utils;
 
@@ -29,26 +28,23 @@ namespace NetworkSniffer
         private void Init()
         {
             Debug.Assert(_socket == null);
-            if (_isInit) return;
+            if (_isInit) { return; }
             try
             {
                 _socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.IP);
 
-                if (_localIp != null)
-                {
-                    _socket.Bind(new IPEndPoint(_localIp, 0));
-                }
+                if (_localIp != null) { _socket.Bind(new IPEndPoint(_localIp, 0)); }
                 _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.HeaderIncluded, true);
                 var receiveAllIp = BitConverter.GetBytes(3);
                 _socket.IOControl(IOControlCode.ReceiveAll, receiveAllIp, null);
                 _socket.ReceiveBufferSize = 1 << 24;
             }
             catch { return; }
-            Task.Run(()=>ReadAsync(_socket));
+            Task.Run(() => ReadAsync(_socket));
             _isInit = true;
         }
 
-        async Task ReadAsync(Socket s)
+        private async Task ReadAsync(Socket s)
         {
             // Reusable SocketAsyncEventArgs and awaitable wrapper 
             var args = new SocketAsyncEventArgs();
@@ -57,20 +53,13 @@ namespace NetworkSniffer
             while (_isInit)
             {
                 await s.ReceiveAsync(awaitable);
-                int bytesRead = args.BytesTransferred;
-                if (bytesRead <= 0) throw new Exception("Raw socket is disconnected");
+                var bytesRead = args.BytesTransferred;
+                if (bytesRead <= 0) { throw new Exception("Raw socket is disconnected"); }
                 IPv4Packet ipPacket;
-                try
-                {
-                    ipPacket = new IPv4Packet(new ByteArraySegment(args.Buffer, 0, bytesRead));
-                }
-                catch (InvalidOperationException)
-                {
-                    continue;
-                }
-                
-                if (ipPacket.Version != IpVersion.IPv4 || ipPacket.Protocol!=IPProtocolType.TCP)
-                    continue;
+                try { ipPacket = new IPv4Packet(new ByteArraySegment(args.Buffer, 0, bytesRead)); }
+                catch (InvalidOperationException) { continue; }
+
+                if (ipPacket.Version != IpVersion.IPv4 || ipPacket.Protocol != IPProtocolType.TCP) { continue; }
                 OnPacketReceived(ipPacket);
             }
             _socket.Close();
@@ -82,11 +71,11 @@ namespace NetworkSniffer
             Debug.Assert(_socket != null);
             _isInit = false;
         }
-        
+
         protected override void SetEnabled(bool value)
         {
-            if (value) Init();
-            else Finish();
+            if (value) { Init(); }
+            else { Finish(); }
         }
 
 
@@ -98,22 +87,27 @@ namespace NetworkSniffer
 
     public sealed class SocketAwaitable : INotifyCompletion
     {
-        private readonly static Action SENTINEL = () => { };
-
-        internal bool m_wasCompleted;
+        private static readonly Action SENTINEL = () => { };
         internal Action m_continuation;
         internal SocketAsyncEventArgs m_eventArgs;
 
+        internal bool m_wasCompleted;
+
         public SocketAwaitable(SocketAsyncEventArgs eventArgs)
         {
-            if (eventArgs == null) throw new ArgumentNullException("eventArgs");
-            m_eventArgs = eventArgs;
+            m_eventArgs = eventArgs ?? throw new ArgumentNullException("eventArgs");
             eventArgs.Completed += delegate
             {
-                var prev = m_continuation ?? Interlocked.CompareExchange(
-                    ref m_continuation, SENTINEL, null);
-                if (prev != null) prev();
+                var prev = m_continuation ?? Interlocked.CompareExchange(ref m_continuation, SENTINEL, null);
+                prev?.Invoke();
             };
+        }
+
+        public bool IsCompleted => m_wasCompleted;
+
+        public void OnCompleted(Action continuation)
+        {
+            if (m_continuation == SENTINEL || Interlocked.CompareExchange(ref m_continuation, continuation, null) == SENTINEL) { Task.Run(continuation); }
         }
 
         internal void Reset()
@@ -122,34 +116,23 @@ namespace NetworkSniffer
             m_continuation = null;
         }
 
-        public SocketAwaitable GetAwaiter() { return this; }
-
-        public bool IsCompleted { get { return m_wasCompleted; } }
-
-        public void OnCompleted(Action continuation)
+        public SocketAwaitable GetAwaiter()
         {
-            if (m_continuation == SENTINEL ||
-                Interlocked.CompareExchange(
-                    ref m_continuation, continuation, null) == SENTINEL)
-            {
-                Task.Run(continuation);
-            }
+            return this;
         }
 
         public void GetResult()
         {
-            if (m_eventArgs.SocketError != SocketError.Success)
-                throw new SocketException((int)m_eventArgs.SocketError);
+            if (m_eventArgs.SocketError != SocketError.Success) { throw new SocketException((int) m_eventArgs.SocketError); }
         }
     }
+
     public static class SocketExtensions
     {
-        public static SocketAwaitable ReceiveAsync(this Socket socket,
-            SocketAwaitable awaitable)
+        public static SocketAwaitable ReceiveAsync(this Socket socket, SocketAwaitable awaitable)
         {
             awaitable.Reset();
-            if (!socket.ReceiveAsync(awaitable.m_eventArgs))
-                awaitable.m_wasCompleted = true;
+            if (!socket.ReceiveAsync(awaitable.m_eventArgs)) { awaitable.m_wasCompleted = true; }
             return awaitable;
         }
     }

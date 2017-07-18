@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Data.Events
 {
     public class CommonAFKEvent : Event
     {
-        public CommonAFKEvent(bool active) : base(false, active, 0, new List<BlackListItem>())
-        {
-        }
+        public CommonAFKEvent(bool active) : base(false, active, 0, new List<BlackListItem>()) { }
     }
 }

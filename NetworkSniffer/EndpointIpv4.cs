@@ -14,7 +14,7 @@ namespace NetworkSniffer
 
         public static bool operator ==(EndpointIpv4 x, EndpointIpv4 y)
         {
-            return (x._ip == y._ip) && (x._port == y._port);
+            return x._ip == y._ip && x._port == y._port;
         }
 
         public static bool operator !=(EndpointIpv4 x, EndpointIpv4 y)
@@ -29,14 +29,13 @@ namespace NetworkSniffer
 
         public override bool Equals(object obj)
         {
-            if (obj is EndpointIpv4)
-                return Equals((EndpointIpv4) obj);
+            if (obj is EndpointIpv4) { return Equals((EndpointIpv4) obj); }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return unchecked((int) (_ip + (uint) _port*1397));
+            return unchecked((int) (_ip + (uint) _port * 1397));
         }
 
         public EndpointIpv4(uint ip, ushort port)

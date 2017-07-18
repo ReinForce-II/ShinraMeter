@@ -4,8 +4,8 @@ namespace DamageMeter.Database.Structures
 {
     public class Skill
     {
-        public Skill(long amount, Database.Type type, Entity target, Player targetPlayer, Entity source, Player sourcePlayer, int skillId, bool hotdot,
-            bool critic, long time, NpcInfo pet, HitDirection direction)
+        public Skill(long amount, Database.Type type, Entity target, Player targetPlayer, Entity source, Player sourcePlayer, int skillId, bool hotdot, bool critic,
+            long time, NpcInfo pet, HitDirection direction)
         {
             Amount = amount;
             Type = type;
@@ -21,16 +21,8 @@ namespace DamageMeter.Database.Structures
             Direction = direction;
             Source = source;
             Target = target;
-            if(PlayerSource != null)
-            {
-                Source = PlayerSource.User;
-            }
-            if(PlayerTarget != null)
-            {
-                Target = PlayerTarget.User;
-            }
-
-            
+            if (PlayerSource != null) { Source = PlayerSource.User; }
+            if (PlayerTarget != null) { Target = PlayerTarget.User; }
         }
 
         public HitDirection Direction { get; }
@@ -41,9 +33,9 @@ namespace DamageMeter.Database.Structures
         public long Amount { get; }
         public Database.Type Type { get; }
         public Entity EntityTarget { get; }
-        public Entity Source { get; private set; }
+        public Entity Source { get; }
 
-        public Entity Target { get; private set; }
+        public Entity Target { get; }
         public Player PlayerTarget { get; }
         public Player PlayerSource { get; }
 

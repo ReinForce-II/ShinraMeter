@@ -21,23 +21,16 @@ namespace DamageMeter.UI.EntityStats
 
         public void Update(HotDot hotdot, int stack, AbnormalityDuration abnormalityDuration, long firstHit, long lastHit)
         {
-            SkillIcon.Source = BasicTeraData.Instance.Icons.GetImage(hotdot.IconName);
-            SkillIcon.ToolTip = string.IsNullOrEmpty(hotdot.ItemName) ? null : hotdot.ItemName;
-            LabelClass.Content = LP.ResourceManager.GetString(abnormalityDuration.InitialPlayerClass.ToString(),LP.Culture);
+            SkillIcon.ImageSource = BasicTeraData.Instance.Icons.GetImage(hotdot.IconName);
+            SkillIconWrapper.ToolTip = string.IsNullOrEmpty(hotdot.ItemName) ? null : hotdot.ItemName;
+            LabelClass.Content = LP.ResourceManager.GetString(abnormalityDuration.InitialPlayerClass.ToString(), LP.Culture);
             var intervalEntity = lastHit - firstHit;
             var ticks = abnormalityDuration.Duration(firstHit, lastHit, stack);
             var interval = TimeSpan.FromTicks(ticks);
             LabelAbnormalityDuration.Content = interval.ToString(@"mm\:ss");
 
-            if (intervalEntity == 0)
-            {
-                LabelAbnormalityDurationPercentage.Content = "0%";
-            }
-            else
-            {
-                LabelAbnormalityDurationPercentage.Content = abnormalityDuration.Duration(firstHit, lastHit, stack)*100/
-                                                             intervalEntity + "%";
-            }
+            if (intervalEntity == 0) { LabelAbnormalityDurationPercentage.Content = "0%"; }
+            else { LabelAbnormalityDurationPercentage.Content = abnormalityDuration.Duration(firstHit, lastHit, stack) * 100 / intervalEntity + "%"; }
             interval = TimeSpan.FromTicks(intervalEntity);
             LabelInterval.Content = interval.ToString(@"mm\:ss");
 
@@ -46,17 +39,6 @@ namespace DamageMeter.UI.EntityStats
             LabelAbnormalityDurationPercentage.ToolTip = hotdot.Id;
         }
 
-        private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                var w = Window.GetWindow(this);
-                w?.DragMove();
-            }
-            catch
-            {
-                Console.WriteLine(@"Exception move");
-            }
-        }
+        private void DragWindow(object sender, MouseButtonEventArgs e) { ((ClickThrouWindow)Window.GetWindow(this))?.Move(sender, e); }
     }
 }

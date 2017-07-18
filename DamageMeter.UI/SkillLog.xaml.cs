@@ -9,7 +9,7 @@ using Tera.Game;
 namespace DamageMeter.UI
 {
     /// <summary>
-    /// Logique d'interaction pour SkillLog.xaml
+    ///     Logique d'interaction pour SkillLog.xaml
     /// </summary>
     public partial class SkillLog
     {
@@ -21,84 +21,69 @@ namespace DamageMeter.UI
 
         public void Update(Database.Structures.Skill skill, bool received, long beginTime)
         {
-            var skillInfo = SkillResult.GetSkill(skill.Source, skill.Pet, skill.SkillId, skill.HotDot,
-                           NetworkController.Instance.EntityTracker, BasicTeraData.Instance.SkillDatabase,
-                           BasicTeraData.Instance.HotDotDatabase, BasicTeraData.Instance.PetSkillDatabase);
+            var skillInfo = SkillResult.GetSkill(skill.Source, skill.Pet, skill.SkillId, skill.HotDot, NetworkController.Instance.EntityTracker,
+                BasicTeraData.Instance.SkillDatabase, BasicTeraData.Instance.HotDotDatabase, BasicTeraData.Instance.PetSkillDatabase);
             var entity = received ? skill.Source : skill.Target;
             Brush color = null;
             var fontWeight = FontWeights.Normal;
-            if (skill.Critic)
-            {
-                fontWeight = FontWeights.Bold;
-            }
-            switch (skill.Type)
-            {
-                case Database.Database.Type.Damage:
-                    color = Brushes.Red;
-                    break;
-                case Database.Database.Type.Heal:
-                    color = Brushes.LawnGreen;
-                    break;
-                case Database.Database.Type.Mana:
-                    color = Brushes.DeepSkyBlue;
-                    break;
-            }
-
-            SkillAmount.Foreground = color;
+            if (skill.Critic) { fontWeight = FontWeights.Bold; }
             SkillAmount.FontWeight = fontWeight;
-            SkillAmount.ToolTip = skill.Critic ? LP.Critical :  LP.White;
+            SkillAmount.ToolTip = skill.Critic ? LP.Critical : LP.White;
             SkillName.Content = skill.SkillId;
-            Time.Content = (skill.Time - beginTime)/TimeSpan.TicksPerSecond + LP.Seconds;
+            Time.Content = (skill.Time - beginTime) / TimeSpan.TicksPerSecond + LP.Seconds;
             if (skillInfo != null)
             {
-                SkillIcon.Source = BasicTeraData.Instance.Icons.GetImage(skillInfo.IconName);
+                SkillIcon.ImageSource = BasicTeraData.Instance.Icons.GetImage(skillInfo.IconName);
                 SkillName.Content = skillInfo.Name;
             }
             SkillAmount.Content = skill.Amount;
-            SkillIcon.ToolTip = skill.SkillId;
+            SkillIconWrapper.ToolTip = skill.SkillId;
             SkillDirection.Content = LP.ResourceManager.GetString(skill.Direction.ToString());
             switch (skill.Direction)
             {
-                    case HitDirection.Back:
-                        SkillDirection.Foreground = Brushes.Red;
+                case HitDirection.Back:
+                    SkillDirection.Foreground = ((SolidColorBrush)Application.Current.FindResource("DamageText"));
                     break;
-                    case HitDirection.Dot:
-                        if (skill.Type == Database.Database.Type.Heal) SkillDirection.Content = LP.Hot;
-                        if (skill.Type == Database.Database.Type.Mana) SkillDirection.Content = LP.Mot;
+                case HitDirection.Dot:
+                    if (skill.Type == Database.Database.Type.Heal) { SkillDirection.Content = LP.Hot; }
+                    if (skill.Type == Database.Database.Type.Mana) { SkillDirection.Content = LP.Mot; }
                     break;
-                    case HitDirection.Front:
-                    SkillDirection.Foreground = Brushes.BlueViolet;
+                case HitDirection.Front:
+                    SkillDirection.Foreground = ((SolidColorBrush)Application.Current.FindResource("ManaText"));
                     break;
-                    case HitDirection.Side:
-                    SkillDirection.Foreground = Brushes.SpringGreen;
+                case HitDirection.Side:
+                    SkillDirection.Foreground = ((SolidColorBrush)Application.Current.FindResource("BuffText"));
                     break;
-
             }
+
+            switch (skill.Type)
+            {
+                case Database.Database.Type.Damage:
+                    color = ((SolidColorBrush)Application.Current.FindResource("DamageText"));
+                    break;
+                case Database.Database.Type.Heal:
+                    color = ((SolidColorBrush)Application.Current.FindResource("HealText"));
+                    break;
+                case Database.Database.Type.Mana:
+                    color = ((SolidColorBrush)Application.Current.FindResource("ManaText"));
+                    break;
+                case Database.Database.Type.Counter:
+                    color = ((SolidColorBrush)Application.Current.FindResource("CastText"));
+                    SkillDirection.Content = LP.Counter;
+                    SkillDirection.Foreground = ((SolidColorBrush)Application.Current.FindResource("CastText"));
+                    break;
+            }
+            SkillAmount.Foreground = color;
 
             SkillName.ToolTip = skill.Time;
-            if (entity is NpcEntity)
+            if (entity is NpcEntity npcEntity)
             {
-                var npc = (NpcEntity) entity;
-                SkillTarget.Content = npc.Info.Name + " : " + npc.Info.Area;
-            }else if (entity is UserEntity)
-            {
-                SkillTarget.Content = ((UserEntity) entity).Name ;
+                SkillTarget.Content = npcEntity.Info.Name + " : " + npcEntity.Info.Area;
             }
+            else if (entity is UserEntity) { SkillTarget.Content = ((UserEntity)entity).Name; }
             SkillPet.Content = skill.Pet == null ? "" : skill.Pet.Name;
-                
         }
 
-        private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                var w = Window.GetWindow(this);
-                w?.DragMove();
-            }
-            catch
-            {
-                Console.WriteLine(@"Exception move");
-            }
-        }
+        private void DragWindow(object sender, MouseButtonEventArgs e) { ((ClickThrouWindow)Window.GetWindow(this))?.Move(sender, e); }
     }
 }

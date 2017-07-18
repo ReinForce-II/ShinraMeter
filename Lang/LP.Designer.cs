@@ -61,6 +61,15 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add DPS server.
+        /// </summary>
+        public static string AddDpsServer {
+            get {
+                return ResourceManager.GetString("AddDpsServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aggro.
         /// </summary>
         public static string Aggro {
@@ -102,6 +111,15 @@ namespace Lang {
         public static string AllianceColor {
             get {
                 return ResourceManager.GetString("AllianceColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed area url.
+        /// </summary>
+        public static string AllowedAreaUrl {
+            get {
+                return ResourceManager.GetString("AllowedAreaUrl", resourceCulture);
             }
         }
         
@@ -169,6 +187,15 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auth Token.
+        /// </summary>
+        public static string AuthToken {
+            get {
+                return ResourceManager.GetString("AuthToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Avg.
         /// </summary>
         public static string Average {
@@ -210,6 +237,15 @@ namespace Lang {
         public static string Back {
             get {
                 return ResourceManager.GetString("Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bad server url.
+        /// </summary>
+        public static string Bad_server_url {
+            get {
+                return ResourceManager.GetString("Bad_server_url", resourceCulture);
             }
         }
         
@@ -336,6 +372,15 @@ namespace Lang {
         public static string CopyInspect {
             get {
                 return ResourceManager.GetString("CopyInspect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skill Сasts.
+        /// </summary>
+        public static string Counter {
+            get {
+                return ResourceManager.GetString("Counter", resourceCulture);
             }
         }
         
@@ -484,6 +529,15 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DPS upload url.
+        /// </summary>
+        public static string DpsUploadUrl {
+            get {
+                return ResourceManager.GetString("DpsUploadUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Eff Time.
         /// </summary>
         public static string EffectTime {
@@ -507,6 +561,15 @@ namespace Lang {
         public static string EnableChat {
             get {
                 return ResourceManager.GetString("EnableChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable overlay.
+        /// </summary>
+        public static string EnableOverlay {
+            get {
+                return ResourceManager.GetString("EnableOverlay", resourceCulture);
             }
         }
         
@@ -912,6 +975,15 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Glyph upload url.
+        /// </summary>
+        public static string GlyphUploadURL {
+            get {
+                return ResourceManager.GetString("GlyphUploadURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group color.
         /// </summary>
         public static string GroupColor {
@@ -1164,11 +1236,29 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable abnormality icons under HP bar.
+        /// </summary>
+        public static string NoAbnormalsInHUD {
+            get {
+                return ResourceManager.GetString("NoAbnormalsInHUD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CrystalBind missing.
         /// </summary>
         public static string NoCrystalBind {
             get {
                 return ResourceManager.GetString("NoCrystalBind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable ingame chat paste.
+        /// </summary>
+        public static string NoPaste {
+            get {
+                return ResourceManager.GetString("NoPaste", resourceCulture);
             }
         }
         
@@ -1272,24 +1362,6 @@ namespace Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export to private dps servers.
-        /// </summary>
-        public static string PrivateServerExport {
-            get {
-                return ResourceManager.GetString("PrivateServerExport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Private server URL.
-        /// </summary>
-        public static string PrivateServerURL {
-            get {
-                return ResourceManager.GetString("PrivateServerURL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Quests done status: .
         /// </summary>
         public static string Quests_status {
@@ -1322,6 +1394,15 @@ namespace Lang {
         public static string RegisterHotKeyError {
             get {
                 return ResourceManager.GetString("RegisterHotKeyError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove DPS server.
+        /// </summary>
+        public static string RemoveDpsServer {
+            get {
+                return ResourceManager.GetString("RemoveDpsServer", resourceCulture);
             }
         }
         
@@ -1398,6 +1479,15 @@ namespace Lang {
         public static string ShowAfkEventsIngame {
             get {
                 return ResourceManager.GetString("ShowAfkEventsIngame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Boss HP Bar.
+        /// </summary>
+        public static string ShowBossGage {
+            get {
+                return ResourceManager.GetString("ShowBossGage", resourceCulture);
             }
         }
         
@@ -1798,11 +1888,20 @@ namespace Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Upload glyph build to moongourd.com.
+        ///   Looks up a localized string similar to Upload glyph build.
         /// </summary>
         public static string UploadGlyphBuild {
             get {
                 return ResourceManager.GetString("UploadGlyphBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string Username {
+            get {
+                return ResourceManager.GetString("Username", resourceCulture);
             }
         }
         
@@ -1861,7 +1960,9 @@ namespace Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your computer is too slow to use this DPS meter. Can&apos;t analyse all those packet in decent amount of time. Shutting down now..
+        ///   Looks up a localized string similar to Your computer is too slow to use this DPS meter.
+        ///Can&apos;t analyse all those packet in decent amount of time. 
+        ///Reset and paused until map change or relog..
         /// </summary>
         public static string Your_computer_is_too_slow {
             get {

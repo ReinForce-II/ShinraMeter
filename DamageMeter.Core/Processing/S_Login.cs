@@ -1,19 +1,20 @@
-﻿using Data;
-using Lang;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Text;
+using Data;
+using Lang;
 using Tera.Game;
+using Tera.Game.Messages;
 
 namespace DamageMeter.Processing
 {
     internal class S_LOGIN
     {
-        internal S_LOGIN(Tera.Game.Messages.LoginServerMessage message)
+        internal S_LOGIN(LoginServerMessage message)
         {
             if (NetworkController.Instance.NeedInit)
             {
                 NetworkController.Instance.RaiseConnected(BasicTeraData.Instance.Servers.GetServerName(message.ServerId, NetworkController.Instance.Server));
-                bool trackerreset = true;
+                var trackerreset = true;
                 if (NetworkController.Instance.EntityTracker != null)
                 {
                     try
@@ -23,7 +24,9 @@ namespace DamageMeter.Processing
                     }
                     catch
                     {
-                        BasicTeraData.LogError("New server:" + NetworkController.Instance.Server + ";Old server Id:" + NetworkController.Instance.EntityTracker.MeterUser?.ServerId, false, true);
+                        BasicTeraData.LogError(
+                            "New server:" + NetworkController.Instance.Server + ";Old server Id:" + NetworkController.Instance.EntityTracker.MeterUser?.ServerId,
+                            false, true);
                         throw;
                     }
                 }
@@ -44,8 +47,9 @@ namespace DamageMeter.Processing
                 NetworkController.Instance.NeedInit = false;
             }
             NetworkController.Instance.AbnormalityStorage.EndAll(message.Time.Ticks);
-            NetworkController.Instance.AbnormalityTracker = new AbnormalityTracker(NetworkController.Instance.EntityTracker, NetworkController.Instance.PlayerTracker,
-                BasicTeraData.Instance.HotDotDatabase, NetworkController.Instance.AbnormalityStorage, DamageTracker.Instance.Update);
+            NetworkController.Instance.AbnormalityTracker = new AbnormalityTracker(NetworkController.Instance.EntityTracker,
+                NetworkController.Instance.PlayerTracker, BasicTeraData.Instance.HotDotDatabase, NetworkController.Instance.AbnormalityStorage,
+                DamageTracker.Instance.Update);
             if (NetworkController.Instance.MessageFactory.ChatEnabled)
             {
                 NetworkController.Instance.AbnormalityTracker.AbnormalityAdded += NotifyProcessor.Instance.AbnormalityNotifierAdded;
@@ -55,24 +59,20 @@ namespace DamageMeter.Processing
             NetworkController.Instance.EntityTracker.Update(message);
             BasicTeraData.Instance.EventsData.Load(NetworkController.Instance.EntityTracker.MeterUser.RaceGenderClass.Class);
             NetworkController.Instance.PacketProcessing.Update();
+            NetworkController.Instance.RaisePause(false);
             var me = NetworkController.Instance.PlayerTracker.Me();
-            if (!NetworkController.Instance.MeterPlayers.Contains(me)) NetworkController.Instance.MeterPlayers.Add(me);
+            if (!NetworkController.Instance.MeterPlayers.Contains(me)) { NetworkController.Instance.MeterPlayers.Add(me); }
         }
+
         internal static void SelectFont(string region)
         {
             CopyPaste.PFC = new PrivateFontCollection();
-            if (region=="RU")
-                CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\Fira Sans.ttf");
-            else if (region == "KR")
-                CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\2002L_chat.ttf");
-            else if (region == "TW")
-                CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\DFPHeiMedium-B5.ttf");
-            else if (region == "JP")
-                CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\TT-UDShinGo-Medium.ttf");
-            else
-                CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\Frutiger LT Pro 55 Roman.ttf");
+            if (region == "RU") { CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\Fira Sans.ttf"); }
+            else if (region == "KR") { CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\2002L_chat.ttf"); }
+            else if (region == "TW") { CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\DFPHeiMedium-B5.ttf"); }
+            else if (region == "JP") { CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\TT-UDShinGo-Medium.ttf"); }
+            else { CopyPaste.PFC.AddFontFile(BasicTeraData.Instance.ResourceDirectory + "data\\fonts\\Frutiger LT Pro 55 Roman.ttf"); }
             CopyPaste.Font = new Font(CopyPaste.PFC.Families[0], 12, FontStyle.Regular, GraphicsUnit.Pixel);
-
         }
     }
 }

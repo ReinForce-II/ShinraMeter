@@ -22,21 +22,15 @@ namespace DamageMeter.AutoUpdate
             var _unique = new Mutex(true, "ShinraMeter", out aIsNewInstance);
             if (!aIsNewInstance)
             {
-                try
-                {
-                    while (!_unique.WaitOne(1000))
-                    {
-                        Console.WriteLine("Sleep");
-                    }
-                }
-                catch (AbandonedMutexException) {} //ignore terminated meter
+                try { while (!_unique.WaitOne(1000)) { Console.WriteLine("Sleep"); } }
+                catch (AbandonedMutexException) { } //ignore terminated meter
             }
             Thread.Sleep(1000);
             var uniqueUpdating = new Mutex(true, "ShinraMeterUpdating", out isUpdating);
             var hashfile = UpdateManager.ExecutableDirectory + @"\ShinraMeterV.sha1";
             if (File.Exists(hashfile))
             {
-                var hashes = UpdateManager.ReadHashFile(hashfile, UpdateManager.ExecutableDirectory+@"\..\");
+                var hashes = UpdateManager.ReadHashFile(hashfile, UpdateManager.ExecutableDirectory + @"\..\");
                 UpdateManager.CleanupRelease(hashes);
                 UpdateManager.Copy(UpdateManager.ExecutableDirectory + @"\release\", UpdateManager.ExecutableDirectory + @"\..\");
                 UpdateManager.ReadDbVersion();
@@ -69,7 +63,7 @@ namespace DamageMeter.AutoUpdate
             }
             try
             {
-                if (Count()) return;
+                if (Count()) { return; }
                 numberTry++;
                 CountError(numberTry);
             }
@@ -84,10 +78,7 @@ namespace DamageMeter.AutoUpdate
         {
             using (var client = new HttpClient())
             {
-                var response =
-                    client.GetAsync(
-                        new Uri("http://diclah.com/~yukikoo/counter/counter.php?version=" + UpdateManager.Version))
-                        .Result;
+                var response = client.GetAsync(new Uri("http://diclah.com/~yukikoo/counter/counter.php?version=" + UpdateManager.Version)).Result;
                 return response.IsSuccessStatusCode;
             }
         }

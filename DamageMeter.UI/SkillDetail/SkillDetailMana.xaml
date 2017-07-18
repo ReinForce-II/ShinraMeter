@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d">
     <Grid>
-        <Grid MouseLeftButtonDown="MoveWindow" Margin="0,0,0,0">
+        <Grid MouseLeftButtonDown="DragWindow" Margin="0,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition SharedSizeGroup="m0" Width="Auto" />
                 <ColumnDefinition SharedSizeGroup="m1" Width="Auto" />
@@ -14,18 +14,20 @@
                 <ColumnDefinition SharedSizeGroup="m4" Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="2" FontSize="14" HorizontalContentAlignment="Center"
+            <Label Grid.Column="2" FontSize="14" HorizontalContentAlignment="Left" Padding="40,0,0,0"
                    HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Name="LabelName"
-                   Foreground="Yellow"
+                   Foreground="{StaticResource LightSecondaryText}"
                    MinHeight="29" />
-            <Label Grid.Column="3" FontSize="14" HorizontalContentAlignment="Center"
+            <Label Grid.Column="3" FontSize="14" HorizontalContentAlignment="Right" Padding="0"
                    HorizontalAlignment="Stretch" x:Name="LabelTotalMana" VerticalAlignment="Center"
                    MinHeight="29"
-                   Foreground="DeepSkyBlue" />
-            <Label Grid.Column="4" FontSize="14" HorizontalContentAlignment="Center"
+                   Foreground="{StaticResource LightSecondaryText}"
+ />
+            <Label Grid.Column="4" FontSize="14" HorizontalContentAlignment="Right" Padding="0"
                    HorizontalAlignment="Stretch" x:Name="LabelNumberHitMana" VerticalAlignment="Center"
                    MinHeight="29"
-                   Foreground="DeepSkyBlue" />
+                   Foreground="{StaticResource LightSecondaryText}"
+ />
         </Grid>
     </Grid>
 </UserControl>

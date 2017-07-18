@@ -274,7 +274,9 @@
     <value>Common</value>
   </data>
   <data name="Your_computer_is_too_slow" xml:space="preserve">
-    <value>Your computer is too slow to use this DPS meter. Can't analyse all those packet in decent amount of time. Shutting down now.</value>
+    <value>Your computer is too slow to use this DPS meter.
+Can't analyse all those packet in decent amount of time. 
+Reset and paused until map change or relog.</value>
   </data>
   <data name="Your_hotkeys_xml_file_is_invalid" xml:space="preserve">
     <value>Your hotkeys.xml file is invalid.</value>
@@ -538,7 +540,7 @@
     <value>Copy "/inspect Name" on party apply request</value>
   </data>
   <data name="UploadGlyphBuild" xml:space="preserve">
-    <value>Upload glyph build to moongourd.com</value>
+    <value>Upload glyph build</value>
   </data>
   <data name="No_active_quest" xml:space="preserve">
     <value>No active quest at the moment</value>
@@ -644,12 +646,6 @@
   <data name="events_valkyrie" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\en\events-valkyrie.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="PrivateServerExport" xml:space="preserve">
-    <value>Export to private dps servers</value>
-  </data>
-  <data name="PrivateServerURL" xml:space="preserve">
-    <value>Private server URL</value>
-  </data>
   <data name="MuteSound" xml:space="preserve">
     <value>Mute sound</value>
   </data>
@@ -661,5 +657,44 @@
   </data>
   <data name="CritDamagePercent" xml:space="preserve">
     <value>% Crit Dmg</value>
+  </data>
+  <data name="AuthToken" xml:space="preserve">
+    <value>Auth Token</value>
+  </data>
+  <data name="ShowBossGage" xml:space="preserve">
+    <value>Show Boss HP Bar</value>
+  </data>
+  <data name="Counter" xml:space="preserve">
+    <value>Skill Сasts</value>
+  </data>
+  <data name="NoPaste" xml:space="preserve">
+    <value>Disable ingame chat paste</value>
+  </data>
+  <data name="NoAbnormalsInHUD" xml:space="preserve">
+    <value>Disable abnormality icons under HP bar</value>
+  </data>
+  <data name="EnableOverlay" xml:space="preserve">
+    <value>Enable overlay</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="DpsUploadUrl" xml:space="preserve">
+    <value>DPS upload url</value>
+  </data>
+  <data name="AllowedAreaUrl" xml:space="preserve">
+    <value>Allowed area url</value>
+  </data>
+  <data name="GlyphUploadURL" xml:space="preserve">
+    <value>Glyph upload url</value>
+  </data>
+  <data name="Bad_server_url" xml:space="preserve">
+    <value>Bad server url</value>
+  </data>
+  <data name="RemoveDpsServer" xml:space="preserve">
+    <value>Remove DPS server</value>
+  </data>
+  <data name="AddDpsServer" xml:space="preserve">
+    <value>Add DPS server</value>
   </data>
 </root>

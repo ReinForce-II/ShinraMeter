@@ -19,8 +19,8 @@ namespace DamageMeter.UI.Skill
 
             foreach (var skillInfo in skill.Skills)
             {
-                if (string.IsNullOrEmpty(skillInfo.Key.IconName)) continue;
-                SkillIcon.Source = BasicTeraData.Instance.Icons.GetImage(skillInfo.Key.IconName);
+                if (string.IsNullOrEmpty(skillInfo.Key.IconName)) { continue; }
+                SkillIcon.ImageSource = BasicTeraData.Instance.Icons.GetImage(skillInfo.Key.IconName);
                 break;
             }
             Update(skill);
@@ -49,10 +49,7 @@ namespace DamageMeter.UI.Skill
 
             SkillsDetailList.Items.Clear();
 
-            foreach (var skillInfo in skill.Skills)
-            {
-                SkillsDetailList.Items.Add(new SkillDetailHeal(skillInfo.Key, skill));
-            }
+            foreach (var skillInfo in skill.Skills) { SkillsDetailList.Items.Add(new SkillDetailHeal(skillInfo.Key, skill)); }
         }
 
         public string SkillNameIdent()
@@ -60,18 +57,7 @@ namespace DamageMeter.UI.Skill
             return (string) LabelName.Content;
         }
 
-        private void MoveWindow(object sender, MouseButtonEventArgs e)
-        {
-            var w = Window.GetWindow(this);
-            try
-            {
-                w?.DragMove();
-            }
-            catch
-            {
-                Console.WriteLine(@"Exception move");
-            }
-        }
+        private void DragWindow(object sender, MouseButtonEventArgs e) { ((ClickThrouWindow)Window.GetWindow(this))?.Move(sender, e); }
 
         private void UIElement_OnMouseLeave(object sender, MouseEventArgs e)
         {
@@ -80,7 +66,7 @@ namespace DamageMeter.UI.Skill
 
         private void UIElement_OnMouseEnter(object sender, MouseEventArgs e)
         {
-            Background = Brushes.Black;
+            Background = new SolidColorBrush(Color.FromArgb(0x10, 255, 255, 255));
         }
     }
 }

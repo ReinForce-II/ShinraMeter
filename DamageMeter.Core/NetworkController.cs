@@ -2,23 +2,20 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using DamageMeter.AutoUpdate;
 using DamageMeter.Database.Structures;
+using DamageMeter.Processing;
 using DamageMeter.Sniffing;
 using DamageMeter.TeraDpsApi;
 using Data;
-using log4net;
+using Data.Actions.Notify;
 using Lang;
 using Tera.Game;
 using Tera.Game.Abnormality;
 using Tera.Game.Messages;
 using Message = Tera.Message;
-using DamageMeter.Processing;
-using Data.Actions.Notify;
 
 namespace DamageMeter
 {
@@ -26,41 +23,40 @@ namespace DamageMeter
     {
         public delegate void ConnectedHandler(string serverName);
 
+        public delegate void GuildIconEvent(Bitmap icon);
+
         public delegate void SetClickThrouEvent();
 
         public delegate void UnsetClickThrouEvent();
 
+        public delegate void PauseEvent(bool paused);
 
-        public delegate void UpdateUiHandler(
-            StatsSummary statsSummary, Skills skills, List<NpcEntity> entities, bool timedEncounter,
-            AbnormalityStorage abnormals,
-            ConcurrentDictionary<string, NpcEntity> bossHistory, List<ChatMessage> chatbox, int packetWaiting, NotifyFlashMessage flash);
-
-        public delegate void GuildIconEvent(Bitmap icon);
+        public delegate void UpdateUiHandler(UiUpdateMessage message);
 
         private static NetworkController _instance;
-        internal readonly AbnormalityStorage AbnormalityStorage;
-        internal AbnormalityTracker AbnormalityTracker;
-        public NotifyFlashMessage FlashMessage { get; set; }
+        private static readonly object _pasteLock = new object();
+        internal AbnormalityStorage AbnormalityStorage;
+
+        internal readonly List<Player> MeterPlayers = new List<Player>();
 
         private bool _clickThrou;
-        private static object _pasteLock=new object();
         private bool _forceUiUpdate;
-        internal bool NeedInit = true;
+        private bool _keepAlive = true;
         private long _lastTick;
-        internal MessageFactory MessageFactory = new MessageFactory();
-        internal UserLogoTracker UserLogoTracker = new UserLogoTracker();
-
-        internal readonly List<Player> MeterPlayers=new List<Player>();
+        internal AbnormalityTracker AbnormalityTracker;
         public ConcurrentDictionary<string, NpcEntity> BossLink = new ConcurrentDictionary<string, NpcEntity>();
+        public GlyphBuild Glyphs = new GlyphBuild();
+        internal MessageFactory MessageFactory = new MessageFactory();
+        internal bool NeedInit = true;
         public CopyKey NeedToCopy;
 
         public DataExporter.Dest NeedToExport = DataExporter.Dest.None;
         public bool NeedToReset;
         public bool NeedToResetCurrent;
-        public PlayerTracker PlayerTracker { get; internal set; }
+
+        internal PacketProcessingFactory PacketProcessing = new PacketProcessingFactory();
         public Server Server;
-        public GlyphBuild Glyphs = new GlyphBuild();
+        internal UserLogoTracker UserLogoTracker = new UserLogoTracker();
 
         private NetworkController()
         {
@@ -71,6 +67,9 @@ namespace DamageMeter
             packetAnalysis.Start();
         }
 
+        public List<NotifyFlashMessage> FlashMessage = new List<NotifyFlashMessage>();
+        public PlayerTracker PlayerTracker { get; internal set; }
+
         public TeraData TeraData { get; internal set; }
         public NpcEntity Encounter { get; private set; }
         public NpcEntity NewEncounter { get; set; }
@@ -80,12 +79,13 @@ namespace DamageMeter
         public static NetworkController Instance => _instance ?? (_instance = new NetworkController());
 
         public EntityTracker EntityTracker { get; internal set; }
+        public bool SendFullDetails { get; set; }
 
         public event SetClickThrouEvent SetClickThrouAction;
         public event GuildIconEvent GuildIconAction;
         public event UnsetClickThrouEvent UnsetClickThrouAction;
-        private bool _keepAlive = true;
-        public bool SendFullDetails { get; set; }
+        public event PauseEvent PauseAction;
+
         public void Exit()
         {
             if (_keepAlive)
@@ -96,12 +96,18 @@ namespace DamageMeter
             TeraSniffer.Instance.Enabled = false;
             _keepAlive = false;
             Thread.Sleep(500);
+            HudManager.Instance.CurrentBosses.DisposeAll();
             Application.Exit();
         }
 
         internal void RaiseConnected(string message)
         {
-            Connected(message);
+            Connected?.Invoke(message);
+        }
+
+        internal void RaisePause(bool pause)
+        {
+            PauseAction?.Invoke(pause);
         }
 
         public event ConnectedHandler Connected;
@@ -111,6 +117,7 @@ namespace DamageMeter
         {
             NeedInit = true;
             MessageFactory = new MessageFactory();
+            NotifyProcessor.Instance.S_LOAD_TOPO(null);
             Connected?.Invoke(LP.SystemTray_No_server);
             OnGuildIconAction(null);
         }
@@ -152,8 +159,9 @@ namespace DamageMeter
                     {
                         AbnormalityTracker.AbnormalityAdded -= NotifyProcessor.Instance.AbnormalityNotifierAdded;
                         AbnormalityTracker.AbnormalityRemoved -= NotifyProcessor.Instance.AbnormalityNotifierRemoved;
+                        HudManager.Instance.CurrentBosses.Clear();
                     }
-                    PacketProcessing.Update();
+                    if (!PacketProcessing.Paused) PacketProcessing.Update();
                 }
                 NotifyProcessor.Instance.AbnormalityNotifierMissing();
             }
@@ -164,7 +172,7 @@ namespace DamageMeter
 
             var entities = Database.Database.Instance.AllEntity();
             var filteredEntities = entities.Select(entityid => EntityTracker.GetOrNull(entityid)).OfType<NpcEntity>().Where(npc => npc.Info.Boss).ToList();
-            if (packetsWaiting > 1500 && filteredEntities.Count > 1)
+            if (packetsWaiting > 2500 && filteredEntities.Count > 1)
             {
                 Database.Database.Instance.DeleteAllWhenTimeBelow(Encounter);
                 entities = Database.Database.Instance.AllEntity();
@@ -174,12 +182,11 @@ namespace DamageMeter
             var entityInfo = Database.Database.Instance.GlobalInformationEntity(currentBoss, timedEncounter);
             if (currentBoss != null)
             {
-                long entityHP = 0;
-                NotifyProcessor.Instance._lastBosses.TryGetValue(currentBoss.Id, out entityHP);
+                NotifyProcessor.Instance._lastBosses.TryGetValue(currentBoss.Id, out long entityHP);
                 var entityDamaged = currentBoss.Info.HP - entityHP;
                 entityInfo.TimeLeft = entityDamaged == 0 ? 0 : entityInfo.Interval * entityHP / entityDamaged;
             }
-            Skills skills = null; 
+            Skills skills = null;
             if (SendFullDetails)
             {
                 skills = Database.Database.Instance.GetSkills(entityInfo.BeginTime, entityInfo.EndTime);
@@ -189,18 +196,34 @@ namespace DamageMeter
                 ? Database.Database.Instance.PlayerDamageInformation(entityInfo.BeginTime, entityInfo.EndTime)
                 : Database.Database.Instance.PlayerDamageInformation(currentBoss);
             if (BasicTeraData.Instance.WindowData.MeterUserOnTop)
+            {
                 playersInfo = playersInfo.OrderBy(x => MeterPlayers.Contains(x.Source) ? 0 : 1).ThenByDescending(x => x.Amount).ToList();
+            }
 
             var heals = Database.Database.Instance.PlayerHealInformation(entityInfo.BeginTime, entityInfo.EndTime);
 
             var flash = FlashMessage;
-            FlashMessage = null;
-       
+            FlashMessage = new List<NotifyFlashMessage>();
+
             var statsSummary = new StatsSummary(playersInfo, heals, entityInfo);
             var teradpsHistory = BossLink;
             var chatbox = Chat.Instance.Get();
             var abnormals = AbnormalityStorage.Clone(currentBoss, entityInfo.BeginTime, entityInfo.EndTime);
-            handler?.Invoke(statsSummary, skills, filteredEntities, timedEncounter, abnormals, teradpsHistory, chatbox, packetsWaiting, flash);
+            var uiMessage = new UiUpdateMessage(statsSummary, skills, filteredEntities, timedEncounter, abnormals, teradpsHistory, chatbox, flash);
+            handler?.Invoke(uiMessage);
+        }
+        
+        public List<DpsServer> Initialize()
+        {
+            var listForUi = new List<DpsServer>();
+            DataExporter.DpsServers = new List<DpsServer> { DpsServer.NeowutranAnonymousServer };
+            foreach(var dpsServer in BasicTeraData.Instance.WindowData.DpsServers)
+            {
+                var server = new DpsServer(dpsServer, false);
+                listForUi.Add(server);
+                DataExporter.DpsServers.Add(server);
+            }
+            return listForUi;
         }
 
         public void SwitchClickThrou()
@@ -225,7 +248,6 @@ namespace DamageMeter
             }
             UnsetClickThrou();
             _clickThrou = false;
-            
         }
 
         protected virtual void SetClickThrou()
@@ -238,10 +260,12 @@ namespace DamageMeter
             UnsetClickThrouAction?.Invoke();
         }
 
-        public static void CopyThread(StatsSummary stats, Skills skills, AbnormalityStorage abnormals,
-            bool timedEncounter, CopyKey copy)
+        public static void CopyThread(StatsSummary stats, Skills skills, AbnormalityStorage abnormals, bool timedEncounter, CopyKey copy)
         {
-            if (BasicTeraData.Instance.HotDotDatabase == null) return;//no database loaded yet => no need to do anything
+            if (BasicTeraData.Instance.HotDotDatabase == null)
+            {
+                return; //no database loaded yet => no need to do anything
+            }
             lock (_pasteLock)
             {
                 var text = CopyPaste.Copy(stats, skills, abnormals, timedEncounter, copy);
@@ -262,14 +286,14 @@ namespace DamageMeter
             }
         }
 
-        internal PacketProcessingFactory PacketProcessing = new PacketProcessingFactory();
-
         private void PacketAnalysisLoop()
         {
             try { Database.Database.Instance.DeleteAll(); }
             catch (Exception ex)
             {
-                BasicTeraData.LogError(ex.Message + "\r\n" + ex.StackTrace + "\r\n" + ex.Source + "\r\n" + ex + "\r\n" + ex.Data + "\r\n" + ex.InnerException + "\r\n" + ex.TargetSite, true);
+                BasicTeraData.LogError(
+                    ex.Message + "\r\n" + ex.StackTrace + "\r\n" + ex.Source + "\r\n" + ex + "\r\n" + ex.Data + "\r\n" + ex.InnerException + "\r\n" + ex.TargetSite,
+                    true);
                 MessageBox.Show(LP.MainWindow_Fatal_error);
                 Exit();
             }
@@ -286,18 +310,12 @@ namespace DamageMeter
                     var playersInfo = timedEncounter
                         ? Database.Database.Instance.PlayerDamageInformation(entityInfo.BeginTime, entityInfo.EndTime)
                         : Database.Database.Instance.PlayerDamageInformation(currentBoss);
-                    var heals = Database.Database.Instance.PlayerHealInformation(entityInfo.BeginTime,
-                        entityInfo.EndTime);
+                    var heals = Database.Database.Instance.PlayerHealInformation(entityInfo.BeginTime, entityInfo.EndTime);
                     var statsSummary = new StatsSummary(playersInfo, heals, entityInfo);
 
                     var tmpcopy = NeedToCopy;
                     var abnormals = AbnormalityStorage.Clone(currentBoss, entityInfo.BeginTime, entityInfo.EndTime);
-                    var pasteThread =
-                        new Thread(() => CopyThread(statsSummary, skills, abnormals, timedEncounter, tmpcopy))
-                        {
-                            Priority = ThreadPriority.Highest
-                            
-                        };
+                    var pasteThread = new Thread(() => CopyThread(statsSummary, skills, abnormals, timedEncounter, tmpcopy)) {Priority = ThreadPriority.Highest};
                     pasteThread.SetApartmentState(ApartmentState.STA);
                     pasteThread.Start();
 
@@ -325,11 +343,16 @@ namespace DamageMeter
                 Encounter = NewEncounter;
 
                 var packetsWaiting = TeraSniffer.Instance.Packets.Count;
-                if (packetsWaiting > 3000)
+                if (packetsWaiting > 5000)
                 {
-                    MessageBox.Show(
-                        LP.Your_computer_is_too_slow);
-                    Exit();
+                    PacketProcessing.Pause();
+                    Database.Database.Instance.DeleteAll();
+                    AbnormalityStorage = new AbnormalityStorage();
+                    AbnormalityTracker = new AbnormalityTracker(EntityTracker, PlayerTracker, BasicTeraData.Instance.HotDotDatabase, AbnormalityStorage, DamageTracker.Instance.Update);
+                    HudManager.Instance.CurrentBosses.DisposeAll();
+                    TeraSniffer.Instance.Packets=new ConcurrentQueue<Message>();
+                    NotifyProcessor.Instance.S_LOAD_TOPO(null);
+                    RaisePause(true);
                 }
 
                 if (_forceUiUpdate)
@@ -349,21 +372,19 @@ namespace DamageMeter
                 }
 
                 var message = MessageFactory.Create(obj);
-                if (message.GetType() == typeof(UnknownMessage)) continue;
+                if (message.GetType() == typeof(UnknownMessage)) { continue; }
 
                 if (!PacketProcessing.Process(message))
                 {
                     //Unprocessed packet
                 }
-
-
             }
         }
-     
+
         public void CheckUpdateUi(int packetsWaiting)
         {
             var second = DateTime.UtcNow.Ticks;
-            if (second - _lastTick < TimeSpan.TicksPerSecond) return;
+            if (second - _lastTick < TimeSpan.TicksPerSecond) { return; }
             UpdateUi(packetsWaiting);
         }
 

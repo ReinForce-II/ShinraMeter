@@ -14,6 +14,13 @@ namespace NetworkSniffer
             Destination = new IPEndPoint(destinationIp, destinationPort);
         }
 
+        public ConnectionId(IPEndPoint source, IPEndPoint destination)
+        {
+            Source = source;
+            Destination = destination;
+        }
+        public ConnectionId Reverse => new ConnectionId(Destination, Source);
+
         public static bool operator ==(ConnectionId x, ConnectionId y)
         {
             return x.Source.Equals(y.Source) && x.Destination.Equals(y.Destination);
@@ -31,14 +38,13 @@ namespace NetworkSniffer
 
         public override bool Equals(object obj)
         {
-            if (obj is ConnectionId)
-                return Equals((ConnectionId) obj);
+            if (obj is ConnectionId) { return Equals((ConnectionId) obj); }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return Source.GetHashCode()*37 + Destination.GetHashCode();
+            return Source.GetHashCode() * 37 + Destination.GetHashCode();
         }
 
         public override string ToString()

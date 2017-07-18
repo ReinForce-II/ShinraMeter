@@ -24,7 +24,7 @@ namespace DamageMeter.Database.Structures
         public long Hit { get; }
         public Player Source { get; }
 
-        public double CritRate => Hit == 0 ? 0 : Critic*100/Hit;
+        public double CritRate => Hit == 0 ? 0 : Critic * 100 / Hit;
         public double CritDamageRate => Amount == 0 ? 0 : CritAmount * 100 / Amount;
         public long Interval => EndTime - BeginTime;
     }

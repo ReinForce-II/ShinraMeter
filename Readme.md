@@ -3,6 +3,8 @@ Shinra Meter
 
 [<img src="https://img.shields.io/badge/rating-4%2B%20stars-brightgreen.svg">](https://recordnotfound.com/ShinraMeter-neowutran-9937)
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/yukikoo)
+
 ShinraMeter is a DPS Meter for TERA based off https://github.com/gothos-folly/TeraDamageMeter . 
 
 Wiki: https://github.com/neowutran/TeraDamageMeter/wiki
@@ -11,15 +13,10 @@ Download: https://neowutran.ovh/updates/
 
 TERADATA: https://github.com/neowutran/TeraDpsMeterData
 
+https://neowutran.ovh/files-storage/
+
 ShinraMeter is dev by Gl0 and Yukikoo/Neowutran
  
-
-Shinra launcher
---------------
-
-- Shinra launcher, a program to launch the shinraMeter automatically when Tera is starting:
-
-https://bitbucket.org/Vysse/shinra-launcher/wiki/Home
 
 Logo
 ---------
@@ -27,6 +24,12 @@ Logo
 Thanks to Se7en-Hellas for the new Shinra logo =) 
 
 Se7en-Hellas website: http://se7enhellas.wixsite.com/mylogogr 
+
+
+Legacy deleted work
+--------------------
+By Vysse: Shinra launcher
+
 
 Original Readme
 ================

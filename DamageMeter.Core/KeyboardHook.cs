@@ -10,10 +10,9 @@ namespace DamageMeter
 {
     public sealed class KeyboardHook : IDisposable
     {
-        private static KeyboardHook _instance;
-
         public delegate void TopmostSwitch();
-        public event TopmostSwitch SwitchTopMost;
+
+        private static KeyboardHook _instance;
         private readonly Window _window = new Window();
         private int _currentId;
 
@@ -27,68 +26,53 @@ namespace DamageMeter
 
 
         public static KeyboardHook Instance => _instance ?? (_instance = new KeyboardHook());
+        public event TopmostSwitch SwitchTopMost;
 
         public bool SetHotkeys(bool value)
         {
-          
             if (value && !_isRegistered)
             {
                 Register();
                 return true;
             }
-            if (!value && _isRegistered)
-            {
-                ClearHotkeys();
-            }
+            if (!value && _isRegistered) { ClearHotkeys(); return true; }
             return false;
-            
         }
 
         private static void hook_KeyPressed(object sender, KeyPressedEventArgs e)
         {
-
-
-            if (e.Key == BasicTeraData.Instance.HotkeysData.Topmost.Key &&
-                e.Modifier == BasicTeraData.Instance.HotkeysData.Topmost.Value)
+            if (e.Key == BasicTeraData.Instance.HotkeysData.Topmost.Key && e.Modifier == BasicTeraData.Instance.HotkeysData.Topmost.Value)
             {
                 Instance.SwitchTopMost?.Invoke();
             }
-            else if (e.Key == BasicTeraData.Instance.HotkeysData.Paste.Key &&
-                     e.Modifier == BasicTeraData.Instance.HotkeysData.Paste.Value)
+            else if (e.Key == BasicTeraData.Instance.HotkeysData.Paste.Key && e.Modifier == BasicTeraData.Instance.HotkeysData.Paste.Value)
             {
                 var text = Clipboard.GetText();
                 var pasteThread = new Thread(() => CopyPaste.Paste(text));
                 pasteThread.Start();
             }
-            else if (e.Key == BasicTeraData.Instance.HotkeysData.Reset.Key &&
-                     e.Modifier == BasicTeraData.Instance.HotkeysData.Reset.Value)
+            else if (e.Key == BasicTeraData.Instance.HotkeysData.Reset.Key && e.Modifier == BasicTeraData.Instance.HotkeysData.Reset.Value)
             {
                 //Can't call directly NetworkController.Instance.Reset() => threading problem
                 NetworkController.Instance.NeedToReset = true;
             }
-            else if (e.Key == BasicTeraData.Instance.HotkeysData.ResetCurrent.Key &&
-                     e.Modifier == BasicTeraData.Instance.HotkeysData.ResetCurrent.Value)
+            else if (e.Key == BasicTeraData.Instance.HotkeysData.ResetCurrent.Key && e.Modifier == BasicTeraData.Instance.HotkeysData.ResetCurrent.Value)
             {
                 //Can't call directly NetworkController.Instance.ResetCurrent() => threading problem
                 NetworkController.Instance.NeedToResetCurrent = true;
             }
-            else if (e.Key == BasicTeraData.Instance.HotkeysData.ExcelSave.Key &&
-                     e.Modifier == BasicTeraData.Instance.HotkeysData.ExcelSave.Value)
+            else if (e.Key == BasicTeraData.Instance.HotkeysData.ExcelSave.Key && e.Modifier == BasicTeraData.Instance.HotkeysData.ExcelSave.Value)
             {
                 //Can't call directly Export => threading problem
                 NetworkController.Instance.NeedToExport = DataExporter.Dest.Excel | DataExporter.Dest.Manual;
             }
-            else if (e.Key == BasicTeraData.Instance.HotkeysData.ClickThrou.Key &&
-                     e.Modifier == BasicTeraData.Instance.HotkeysData.ClickThrou.Value)
+            else if (e.Key == BasicTeraData.Instance.HotkeysData.ClickThrou.Key && e.Modifier == BasicTeraData.Instance.HotkeysData.ClickThrou.Value)
             {
                 NetworkController.Instance.SwitchClickThrou();
             }
-            foreach (
-                var copy in
-                    BasicTeraData.Instance.HotkeysData.Copy.Where(
-                        copy => e.Key == copy.Key && e.Modifier == copy.Modifier))
-            {
+            foreach (var copy in BasicTeraData.Instance.HotkeysData.Copy.Where(copy => e.Key == copy.Key && e.Modifier == copy.Modifier))
                 //Can't copy directly, => threading problem
+            {
                 NetworkController.Instance.NeedToCopy = copy;
             }
         }
@@ -97,48 +81,33 @@ namespace DamageMeter
         public void Update()
         {
             ClearHotkeys();
-            Register();       
+            Register();
         }
 
         public void RegisterKeyboardHook()
         {
-          
-                // register the event that is fired after the key press.
-                Instance.KeyPressed += hook_KeyPressed;
-          
-                if (!_isRegistered)
-                {
-                    Register();
-                }
-            
+            // register the event that is fired after the key press.
+            Instance.KeyPressed += hook_KeyPressed;
+
+            if (!_isRegistered) { Register(); }
         }
 
         private void Register()
         {
             //MessageBox.Show("PASSE" + Environment.StackTrace, "ERROR: "+ Environment.StackTrace, MessageBoxButtons.OKCancel);
 
-            RegisterHotKey(BasicTeraData.Instance.HotkeysData.Topmost.Value,
-                BasicTeraData.Instance.HotkeysData.Topmost.Key);
-            RegisterHotKey(BasicTeraData.Instance.HotkeysData.Paste.Value,
-                BasicTeraData.Instance.HotkeysData.Paste.Key);
-            RegisterHotKey(BasicTeraData.Instance.HotkeysData.Reset.Value,
-                BasicTeraData.Instance.HotkeysData.Reset.Key);
-            RegisterHotKey(BasicTeraData.Instance.HotkeysData.ResetCurrent.Value,
-                BasicTeraData.Instance.HotkeysData.ResetCurrent.Key);
-            RegisterHotKey(BasicTeraData.Instance.HotkeysData.ExcelSave.Value,
-                BasicTeraData.Instance.HotkeysData.ExcelSave.Key);
-            RegisterHotKey(BasicTeraData.Instance.HotkeysData.ClickThrou.Value,
-                BasicTeraData.Instance.HotkeysData.ClickThrou.Key);
+            RegisterHotKey(BasicTeraData.Instance.HotkeysData.Topmost.Value, BasicTeraData.Instance.HotkeysData.Topmost.Key);
+            RegisterHotKey(BasicTeraData.Instance.HotkeysData.Paste.Value, BasicTeraData.Instance.HotkeysData.Paste.Key);
+            RegisterHotKey(BasicTeraData.Instance.HotkeysData.Reset.Value, BasicTeraData.Instance.HotkeysData.Reset.Key);
+            RegisterHotKey(BasicTeraData.Instance.HotkeysData.ResetCurrent.Value, BasicTeraData.Instance.HotkeysData.ResetCurrent.Key);
+            RegisterHotKey(BasicTeraData.Instance.HotkeysData.ExcelSave.Value, BasicTeraData.Instance.HotkeysData.ExcelSave.Key);
+            RegisterHotKey(BasicTeraData.Instance.HotkeysData.ClickThrou.Value, BasicTeraData.Instance.HotkeysData.ClickThrou.Key);
             if (BasicTeraData.Instance.WindowData.RemoveTeraAltEnterHotkey)
             {
                 RegisterHotKey(HotkeysData.ModifierKeys.Alt, Keys.Enter);
                 RegisterHotKey(HotkeysData.ModifierKeys.Alt | HotkeysData.ModifierKeys.Control, Keys.Enter);
-
             }
-            foreach (var copy in BasicTeraData.Instance.HotkeysData.Copy)
-            {
-                RegisterHotKey(copy.Modifier, copy.Key);
-            }
+            foreach (var copy in BasicTeraData.Instance.HotkeysData.Copy) { RegisterHotKey(copy.Modifier, copy.Key); }
             _isRegistered = true;
         }
 
@@ -157,13 +126,15 @@ namespace DamageMeter
         /// <param name="key">The key itself that is associated with the hot key.</param>
         public void RegisterHotKey(HotkeysData.ModifierKeys modifier, Keys key)
         {
-            if (key == Keys.None) return; //allow disable hotkeys using "None" key
+            if (key == Keys.None)
+            {
+                return; //allow disable hotkeys using "None" key
+            }
             // increment the counter.
             _currentId++;
 
             // register the hot key.
-            if (!RegisterHotKey(_window.Handle, _currentId, (uint) modifier, (uint) key))
-                MessageBox.Show(LP.RegisterHotKeyError + " " + key + LP.AlreadyInUse);
+            if (!RegisterHotKey(_window.Handle, _currentId, (uint) modifier, (uint) key)) { MessageBox.Show(LP.RegisterHotKeyError + " " + key + LP.AlreadyInUse); }
         }
 
         /// <summary>
@@ -229,10 +200,7 @@ namespace DamageMeter
 
         private void ClearHotkeys()
         {
-            for (var i = _currentId; i > 0; i--)
-            {
-                UnregisterHotKey(_window.Handle, i);
-            }
+            for (var i = _currentId; i > 0; i--) { UnregisterHotKey(_window.Handle, i); }
             _currentId = 0;
             _isRegistered = false;
         }

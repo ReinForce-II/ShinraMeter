@@ -274,7 +274,9 @@
     <value>Общее</value>
   </data>
   <data name="Your_computer_is_too_slow" xml:space="preserve">
-    <value>Ваш компьютер слишком медленный для этого дпсметра, не успеваю анализировать пакеты с достаточной скоростью.</value>
+    <value>Ваш компьютер слишком медленный для этого дпсметра,
+не успеваю анализировать пакеты с достаточной скоростью.
+Сброс и приостановка сбора статистики до перехода на другую карту или релога.</value>
   </data>
   <data name="Your_hotkeys_xml_file_is_invalid" xml:space="preserve">
     <value>Файл hotkeys.xml некоректен.</value>
@@ -307,19 +309,19 @@
     <value>Время смерти</value>
   </data>
   <data name="Death_Time_Tooltip" xml:space="preserve">
-    <value>"Время проведенное трупом"</value>
+    <value>Время проведенное трупом</value>
   </data>
   <data name="Aggro" xml:space="preserve">
     <value>Аггро</value>
   </data>
   <data name="Aggro_Tooltip" xml:space="preserve">
-    <value>Количество перехватов аггрессии</value>
+    <value>Количество перехватов агрессии</value>
   </data>
   <data name="Aggro_Time" xml:space="preserve">
     <value>Время аггро</value>
   </data>
   <data name="Aggro_Time_Tooltip" xml:space="preserve">
-    <value>"Время удержания агрессии босса"</value>
+    <value>Время удержания агрессии босса</value>
   </data>
   <data name="Dps" xml:space="preserve">
     <value>ДПС</value>
@@ -532,7 +534,7 @@
     <value>Копировать "/inspect Имя" при запросе вступления в пати</value>
   </data>
   <data name="UploadGlyphBuild" xml:space="preserve">
-    <value>Загрузить глиф билд на moongourd.com</value>
+    <value>Загрузить глиф билд</value>
   </data>
   <data name="No_active_quest" xml:space="preserve">
     <value>Нет активных заданий.</value>
@@ -632,12 +634,6 @@
   <data name="OpenChatBox" xml:space="preserve">
     <value>Открыть окно чата</value>
   </data>
-  <data name="PrivateServerExport" xml:space="preserve">
-    <value>Экспорт на приватные сайты</value>
-  </data>
-  <data name="PrivateServerURL" xml:space="preserve">
-    <value>URL приватного сайта</value>
-  </data>
   <data name="MuteSound" xml:space="preserve">
     <value>Выключить звук</value>
   </data>
@@ -652,5 +648,41 @@
   </data>
   <data name="Valkyrie" xml:space="preserve">
     <value>Валькирия</value>
+  </data>
+  <data name="ShowBossGage" xml:space="preserve">
+    <value>Показать HP босса</value>
+  </data>
+  <data name="Counter" xml:space="preserve">
+    <value>Использ. умения</value>
+  </data>
+  <data name="NoPaste" xml:space="preserve">
+    <value>Отключить вставку в игровой чат</value>
+  </data>
+  <data name="NoAbnormalsInHUD" xml:space="preserve">
+    <value>Отключить иконки под полоской HP</value>
+  </data>
+  <data name="EnableOverlay" xml:space="preserve">
+    <value>Включить оверлей</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="DpsUploadUrl" xml:space="preserve">
+    <value>Адрес загрузки DPS</value>
+  </data>
+  <data name="AllowedAreaUrl" xml:space="preserve">
+    <value>Адрес списка боссов</value>
+  </data>
+  <data name="GlyphUploadURL" xml:space="preserve">
+    <value>Адрес загруки глифбилда</value>
+  </data>
+  <data name="Bad_server_url" xml:space="preserve">
+    <value>Неправильный адрес сервера</value>
+  </data>
+  <data name="RemoveDpsServer" xml:space="preserve">
+    <value>Удалить сервер статистики</value>
+  </data>
+  <data name="AddDpsServer" xml:space="preserve">
+    <value>Добавить сервер статистики</value>
   </data>
 </root>

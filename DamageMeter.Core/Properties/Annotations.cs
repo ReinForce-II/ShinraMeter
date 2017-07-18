@@ -37,9 +37,7 @@ namespace DamageMeter.Properties
         ///     Initializes a new instance of the <see cref="LocalizationRequiredAttribute" /> class with
         ///     <see cref="Required" /> set to <see langword="true" />.
         /// </summary>
-        public LocalizationRequiredAttribute() : this(true)
-        {
-        }
+        public LocalizationRequiredAttribute() : this(true) { }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LocalizationRequiredAttribute" /> class.
@@ -114,7 +112,7 @@ namespace DamageMeter.Properties
         ///     Gets format parameter name
         /// </summary>
         [UsedImplicitly]
-        public string FormatParameterName { get; private set; }
+        public string FormatParameterName { get; }
     }
 
     /// <summary>
@@ -132,9 +130,7 @@ namespace DamageMeter.Properties
     /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class InvokerParameterNameAttribute : Attribute
-    {
-    }
+    public sealed class InvokerParameterNameAttribute : Attribute { }
 
     /// <summary>
     ///     Indicates that the method is contained in a type that implements
@@ -202,9 +198,7 @@ namespace DamageMeter.Properties
     [AttributeUsage(AttributeTargets.Method)]
     public sealed class NotifyPropertyChangedInvocatorAttribute : Attribute
     {
-        public NotifyPropertyChangedInvocatorAttribute()
-        {
-        }
+        public NotifyPropertyChangedInvocatorAttribute() { }
 
         public NotifyPropertyChangedInvocatorAttribute(string parameterName)
         {
@@ -212,7 +206,7 @@ namespace DamageMeter.Properties
         }
 
         [UsedImplicitly]
-        public string ParameterName { get; private set; }
+        public string ParameterName { get; }
     }
 
     /// <summary>
@@ -234,12 +228,8 @@ namespace DamageMeter.Properties
     /// }
     /// </code>
     /// </example>
-    [AttributeUsage(
-        AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Delegate |
-        AttributeTargets.Field)]
-    public sealed class CanBeNullAttribute : Attribute
-    {
-    }
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Delegate | AttributeTargets.Field)]
+    public sealed class CanBeNullAttribute : Attribute { }
 
     /// <summary>
     ///     Indicates that the value of the marked element could never be <c>null</c>
@@ -253,12 +243,8 @@ namespace DamageMeter.Properties
     /// } 
     /// </code>
     /// </example>
-    [AttributeUsage(
-        AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Delegate |
-        AttributeTargets.Field)]
-    public sealed class NotNullAttribute : Attribute
-    {
-    }
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Delegate | AttributeTargets.Field)]
+    public sealed class NotNullAttribute : Attribute { }
 
     /// <summary>
     ///     Describes dependency between method input and output.
@@ -317,9 +303,7 @@ namespace DamageMeter.Properties
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public sealed class ContractAnnotationAttribute : Attribute
     {
-        public ContractAnnotationAttribute([NotNull] string fdt) : this(fdt, false)
-        {
-        }
+        public ContractAnnotationAttribute([NotNull] string fdt) : this(fdt, false) { }
 
         public ContractAnnotationAttribute([NotNull] string fdt, bool forceFullStates)
         {
@@ -327,8 +311,8 @@ namespace DamageMeter.Properties
             ForceFullStates = forceFullStates;
         }
 
-        public string Fdt { get; private set; }
-        public bool ForceFullStates { get; private set; }
+        public string Fdt { get; }
+        public bool ForceFullStates { get; }
     }
 
     /// <summary>
@@ -359,9 +343,7 @@ namespace DamageMeter.Properties
     /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
-    public sealed class CannotApplyEqualityOperatorAttribute : Attribute
-    {
-    }
+    public sealed class CannotApplyEqualityOperatorAttribute : Attribute { }
 
     /// <summary>
     ///     When applied to a target attribute, specifies a requirement for any type marked with
@@ -394,7 +376,7 @@ namespace DamageMeter.Properties
         /// <summary>
         ///     Gets enumerations of specified base types
         /// </summary>
-        public Type[] BaseTypes { get; private set; }
+        public Type[] BaseTypes { get; }
     }
 
     /// <summary>
@@ -405,10 +387,7 @@ namespace DamageMeter.Properties
     public sealed class UsedImplicitlyAttribute : Attribute
     {
         [UsedImplicitly]
-        public UsedImplicitlyAttribute()
-            : this(ImplicitUseKindFlags.Default, ImplicitUseTargetFlags.Default)
-        {
-        }
+        public UsedImplicitlyAttribute() : this(ImplicitUseKindFlags.Default, ImplicitUseTargetFlags.Default) { }
 
         [UsedImplicitly]
         public UsedImplicitlyAttribute(ImplicitUseKindFlags useKindFlags, ImplicitUseTargetFlags targetFlags)
@@ -418,25 +397,19 @@ namespace DamageMeter.Properties
         }
 
         [UsedImplicitly]
-        public UsedImplicitlyAttribute(ImplicitUseKindFlags useKindFlags)
-            : this(useKindFlags, ImplicitUseTargetFlags.Default)
-        {
-        }
+        public UsedImplicitlyAttribute(ImplicitUseKindFlags useKindFlags) : this(useKindFlags, ImplicitUseTargetFlags.Default) { }
 
         [UsedImplicitly]
-        public UsedImplicitlyAttribute(ImplicitUseTargetFlags targetFlags)
-            : this(ImplicitUseKindFlags.Default, targetFlags)
-        {
-        }
+        public UsedImplicitlyAttribute(ImplicitUseTargetFlags targetFlags) : this(ImplicitUseKindFlags.Default, targetFlags) { }
 
         [UsedImplicitly]
-        public ImplicitUseKindFlags UseKindFlags { get; private set; }
+        public ImplicitUseKindFlags UseKindFlags { get; }
 
         /// <summary>
         ///     Gets value indicating what is meant to be used
         /// </summary>
         [UsedImplicitly]
-        public ImplicitUseTargetFlags TargetFlags { get; private set; }
+        public ImplicitUseTargetFlags TargetFlags { get; }
     }
 
     /// <summary>
@@ -447,10 +420,7 @@ namespace DamageMeter.Properties
     public sealed class MeansImplicitUseAttribute : Attribute
     {
         [UsedImplicitly]
-        public MeansImplicitUseAttribute()
-            : this(ImplicitUseKindFlags.Default, ImplicitUseTargetFlags.Default)
-        {
-        }
+        public MeansImplicitUseAttribute() : this(ImplicitUseKindFlags.Default, ImplicitUseTargetFlags.Default) { }
 
         [UsedImplicitly]
         public MeansImplicitUseAttribute(ImplicitUseKindFlags useKindFlags, ImplicitUseTargetFlags targetFlags)
@@ -460,25 +430,19 @@ namespace DamageMeter.Properties
         }
 
         [UsedImplicitly]
-        public MeansImplicitUseAttribute(ImplicitUseKindFlags useKindFlags)
-            : this(useKindFlags, ImplicitUseTargetFlags.Default)
-        {
-        }
+        public MeansImplicitUseAttribute(ImplicitUseKindFlags useKindFlags) : this(useKindFlags, ImplicitUseTargetFlags.Default) { }
 
         [UsedImplicitly]
-        public MeansImplicitUseAttribute(ImplicitUseTargetFlags targetFlags)
-            : this(ImplicitUseKindFlags.Default, targetFlags)
-        {
-        }
+        public MeansImplicitUseAttribute(ImplicitUseTargetFlags targetFlags) : this(ImplicitUseKindFlags.Default, targetFlags) { }
 
         [UsedImplicitly]
-        public ImplicitUseKindFlags UseKindFlags { get; private set; }
+        public ImplicitUseKindFlags UseKindFlags { get; }
 
         /// <summary>
         ///     Gets value indicating what is meant to be used
         /// </summary>
         [UsedImplicitly]
-        public ImplicitUseTargetFlags TargetFlags { get; private set; }
+        public ImplicitUseTargetFlags TargetFlags { get; }
     }
 
     [Flags]
@@ -536,9 +500,7 @@ namespace DamageMeter.Properties
     ///     If the parameter is an enumerable, indicates that it is enumerated while the method is executed.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class InstantHandleAttribute : Attribute
-    {
-    }
+    public sealed class InstantHandleAttribute : Attribute { }
 
 
     /// <summary>
@@ -561,9 +523,7 @@ namespace DamageMeter.Properties
     ///  </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class PureAttribute : Attribute
-    {
-    }
+    public sealed class PureAttribute : Attribute { }
 
     /// <summary>
     ///     Indicates that a parameter is a path to a file or a folder within a web project.
@@ -572,9 +532,7 @@ namespace DamageMeter.Properties
     [AttributeUsage(AttributeTargets.Parameter)]
     public class PathReferenceAttribute : Attribute
     {
-        public PathReferenceAttribute()
-        {
-        }
+        public PathReferenceAttribute() { }
 
         [UsedImplicitly]
         public PathReferenceAttribute([PathReference] string basePath)
@@ -583,7 +541,7 @@ namespace DamageMeter.Properties
         }
 
         [UsedImplicitly]
-        public string BasePath { get; private set; }
+        public string BasePath { get; }
     }
 
     // ASP.NET MVC attributes
@@ -599,9 +557,7 @@ namespace DamageMeter.Properties
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
     public sealed class AspMvcActionAttribute : Attribute
     {
-        public AspMvcActionAttribute()
-        {
-        }
+        public AspMvcActionAttribute() { }
 
         public AspMvcActionAttribute(string anonymousProperty)
         {
@@ -609,7 +565,7 @@ namespace DamageMeter.Properties
         }
 
         [UsedImplicitly]
-        public string AnonymousProperty { get; private set; }
+        public string AnonymousProperty { get; }
     }
 
     /// <summary>
@@ -623,9 +579,7 @@ namespace DamageMeter.Properties
     public sealed class AspMvcAreaAttribute : PathReferenceAttribute
     {
         [UsedImplicitly]
-        public AspMvcAreaAttribute()
-        {
-        }
+        public AspMvcAreaAttribute() { }
 
         public AspMvcAreaAttribute(string anonymousProperty)
         {
@@ -633,7 +587,7 @@ namespace DamageMeter.Properties
         }
 
         [UsedImplicitly]
-        public string AnonymousProperty { get; private set; }
+        public string AnonymousProperty { get; }
     }
 
     /// <summary>
@@ -647,9 +601,7 @@ namespace DamageMeter.Properties
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
     public sealed class AspMvcControllerAttribute : Attribute
     {
-        public AspMvcControllerAttribute()
-        {
-        }
+        public AspMvcControllerAttribute() { }
 
         public AspMvcControllerAttribute(string anonymousProperty)
         {
@@ -657,7 +609,7 @@ namespace DamageMeter.Properties
         }
 
         [UsedImplicitly]
-        public string AnonymousProperty { get; private set; }
+        public string AnonymousProperty { get; }
     }
 
     /// <summary>
@@ -668,9 +620,7 @@ namespace DamageMeter.Properties
     ///     </see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class AspMvcMasterAttribute : Attribute
-    {
-    }
+    public sealed class AspMvcMasterAttribute : Attribute { }
 
     /// <summary>
     ///     ASP.NET MVC attribute. Indicates that a parameter is an MVC model type.
@@ -680,9 +630,7 @@ namespace DamageMeter.Properties
     ///     </see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class AspMvcModelTypeAttribute : Attribute
-    {
-    }
+    public sealed class AspMvcModelTypeAttribute : Attribute { }
 
     /// <summary>
     ///     ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter is an MVC partial view.
@@ -693,17 +641,13 @@ namespace DamageMeter.Properties
     ///     </see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
-    public sealed class AspMvcPartialViewAttribute : PathReferenceAttribute
-    {
-    }
+    public sealed class AspMvcPartialViewAttribute : PathReferenceAttribute { }
 
     /// <summary>
     ///     ASP.NET MVC attribute. Allows disabling all inspections for MVC views within a class or a method.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public sealed class AspMvcSupressViewErrorAttribute : Attribute
-    {
-    }
+    public sealed class AspMvcSupressViewErrorAttribute : Attribute { }
 
     /// <summary>
     ///     ASP.NET MVC attribute. Indicates that a parameter is an MVC display template.
@@ -713,9 +657,7 @@ namespace DamageMeter.Properties
     ///     </see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class AspMvcDisplayTemplateAttribute : Attribute
-    {
-    }
+    public sealed class AspMvcDisplayTemplateAttribute : Attribute { }
 
     /// <summary>
     ///     ASP.NET MVC attribute. Indicates that a parameter is an MVC editor template.
@@ -725,9 +667,7 @@ namespace DamageMeter.Properties
     ///     </see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
-    public sealed class AspMvcEditorTemplateAttribute : Attribute
-    {
-    }
+    public sealed class AspMvcEditorTemplateAttribute : Attribute { }
 
     /// <summary>
     ///     ASP.NET MVC attribute. If applied to a parameter, indicates that the parameter is an MVC view.
@@ -738,9 +678,7 @@ namespace DamageMeter.Properties
     ///     </see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
-    public sealed class AspMvcViewAttribute : PathReferenceAttribute
-    {
-    }
+    public sealed class AspMvcViewAttribute : PathReferenceAttribute { }
 
     /// <summary>
     ///     ASP.NET MVC attribute. When applied to a parameter of an attribute,
@@ -757,9 +695,7 @@ namespace DamageMeter.Properties
     /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
-    public sealed class AspMvcActionSelectorAttribute : Attribute
-    {
-    }
+    public sealed class AspMvcActionSelectorAttribute : Attribute { }
 
     // Razor attributes
 
@@ -771,7 +707,5 @@ namespace DamageMeter.Properties
     ///     </see>
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
-    public sealed class RazorSectionAttribute : Attribute
-    {
-    }
+    public sealed class RazorSectionAttribute : Attribute { }
 }

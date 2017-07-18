@@ -10,138 +10,28 @@ using System.Xml.Linq;
 
 namespace Data
 {
+    public struct WindowStatus
+    {
+        public Point Location;
+        public bool Visible;
+        public double Scale;
+
+        public WindowStatus(Point p, bool v, double s)
+        {
+            Location = p;
+            Visible = v;
+            Scale = s;
+        }
+    }
+
     public class WindowData
     {
         private readonly FileStream _filestream;
         private readonly XDocument _xml;
-        public int LFDelay { get; set; }
-        public Point Location { get; set; }
-        public string ExcelSaveDirectory { get; set; }
-        public double Scale { get; set; }
-        public bool PartyOnly { get; set; }
-        public double MainWindowOpacity { get; private set; }
-        public double SkillWindowOpacity { get; private set; }
-        public bool RememberPosition { get; private set; }
-        public string Language { get; private set; }
-        public string UILanguage { get; private set; }
-        public bool AutoUpdate { get; private set; }
-        public bool Winpcap { get; private set; }
-        public bool InvisibleUi { get; set; }
-        public bool AllowTransparency { get; set; }
-        public string TeraDpsUser { get; private set; }
-        public string TeraDpsToken { get; private set; }
-        public bool AlwaysVisible { get; set; }
-        public bool Topmost { get; set; }
-        public bool Debug { get; set; }
-        public bool Excel { get; set; }
-        public int ExcelCMADPSSeconds { get; set; }
-        public bool SiteExport { get; set; }
-        public bool ShowHealCrit { get; set; }
-        public bool ShowCritDamageRate { get; set; }
-        public bool OnlyBoss { get; set; }
-        public bool DetectBosses { get; set; }
-
-        public string ExcelPathTemplate { get; set; }
-
-        public int NumberOfPlayersDisplayed { get; set; }
-        public bool MeterUserOnTop { get; set; }
-        public bool LowPriority { get; set; }
-        public bool EnableChat { get; set; }
-        public bool CopyInspect { get; set; }
-        public bool ShowAfkEventsIngame { get; set; }
-
-     
-        public string DiscordLogin { get; set; }
-        public string DiscordPassword { get; set; }
-
-        public bool DisablePartyEvent { get; set; }
-
-       public Dictionary<string, DiscordInfoByGuild> DiscordInfoByGuild { get; set; }
-
-        public Color WhisperColor { get; set; }
-        public Color AllianceColor { get; set; }
-        public Color AreaColor { get; set; }
-        public Color GeneralColor { get; set; }
-        public Color GroupColor { get; set; }
-        public Color GuildColor { get; set; }
-        public Color RaidColor { get; set; }
-        public Color SayColor { get; set; }
-        public Color TradingColor { get; set; }
-        public Color EmotesColor { get; set; }
-
-        public Color PrivateChannelColor { get; set; }
-        public bool RemoveTeraAltEnterHotkey { get; set; }
-        public bool FormatPasteString { get; set; }
-        public bool PrivateServerExport { get; set; }
-        public List<string> PrivateDpsServers { get; set; }
-        public bool MuteSound { get; set; }
-        public int IdleResetTimeout { get; set; }
-        public bool DateInExcelPath { get; set; }
-        public bool ShowTimeLeft { get; set; }
-        private void DefaultValue()
-        {
-            ShowTimeLeft = false;
-            DateInExcelPath = false;
-            Location = new Point(0, 0);
-            Language = "Auto";
-            UILanguage = "Auto";
-            MainWindowOpacity = 0.5;
-            SkillWindowOpacity = 0.7;
-            AutoUpdate = true;
-            RememberPosition = true;
-            InvisibleUi = false;
-            Winpcap = true;
-            Topmost = true;
-            AllowTransparency = true;
-            Debug = true;
-            TeraDpsToken = "";
-            TeraDpsUser = "";
-            Excel = false;
-            ExcelCMADPSSeconds = 1;
-            AlwaysVisible = false;
-            Scale = 1;
-            PartyOnly = false;
-            SiteExport = false;
-            ShowHealCrit = true;
-            ShowCritDamageRate = false;
-            ExcelSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ShinraMeter/");
-            LFDelay = 150;
-            OnlyBoss = false;
-            DetectBosses = false;
-            ExcelPathTemplate = "{Area}/{Boss} {Date} {Time} {User}";
-            MeterUserOnTop = false;
-            NumberOfPlayersDisplayed = 5;
-            FormatPasteString = true;
-            WhisperColor = Brushes.Pink.Color;
-            AllianceColor = Brushes.Green.Color;
-            AreaColor = Brushes.Purple.Color;
-            GeneralColor = Brushes.Yellow.Color;
-            GroupColor = Brushes.Cyan.Color;
-            GuildColor = Brushes.LightGreen.Color;
-            RaidColor = Brushes.Orange.Color;
-            SayColor = Brushes.White.Color;
-            TradingColor = Brushes.Sienna.Color;
-            EmotesColor = Brushes.White.Color;
-            PrivateChannelColor = Brushes.Red.Color;
-            LowPriority = true;
-            RemoveTeraAltEnterHotkey = false;
-            EnableChat = true;
-            CopyInspect = true;
-            ShowAfkEventsIngame = false;
-            DiscordInfoByGuild = new Dictionary<string, Data.DiscordInfoByGuild>();
-            DiscordLogin = "";
-            DiscordPassword = "";
-            DisablePartyEvent = false;
-            PrivateServerExport = false;
-            PrivateDpsServers=new List<string>() {""};
-            MuteSound = false;
-            IdleResetTimeout = 0;
-        }
 
 
         public WindowData(BasicTeraData basicData)
         {
-            DefaultValue();
             // Load XML File
             var windowFile = Path.Combine(basicData.ResourceDirectory, "config/window.xml");
 
@@ -166,20 +56,14 @@ namespace Data
                 _filestream = new FileStream(windowFile, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
                 return;
             }
-            catch
-            {
-                return;
-            }
+            catch { return; }
 
             Parse("lf_delay", "LFDelay");
-            Parse("number_of_players_displayed", "NumberOfPlayersDisplayed"); 
+            Parse("number_of_players_displayed", "NumberOfPlayersDisplayed");
             Parse("meter_user_on_top", "MeterUserOnTop");
             Parse("excel_save_directory", "ExcelSaveDirectory");
 
-            if (ExcelSaveDirectory == "")
-            {
-                ExcelSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ShinraMeter/");
-            }
+            if (ExcelSaveDirectory == "") { ExcelSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ShinraMeter/"); }
 
 
             Parse("show_crit_damage_rate", "ShowCritDamageRate");
@@ -200,7 +84,7 @@ namespace Data
             Parse("detect_bosses_only_by_hp_bar", "DetectBosses");
             Parse("excel_path_template", "ExcelPathTemplate");
             Parse("low_priority", "LowPriority");
-            Parse("format_paste_string", "FormatPasteString");                    
+            Parse("format_paste_string", "FormatPasteString");
             Parse("remove_tera_alt_enter_hotkey", "RemoveTeraAltEnterHotkey");
             Parse("enable_chat_and_notifications", "EnableChat");
             Parse("copy_inspect", "CopyInspect");
@@ -209,7 +93,10 @@ namespace Data
             Parse("show_afk_events_ingame", "ShowAfkEventsIngame");
             Parse("mute_sound", "MuteSound");
             Parse("idle_reset_timeout", "IdleResetTimeout");
-            ParseColor("say_color","SayColor");
+            Parse("no_paste", "NoPaste");
+            Parse("no_abnormals_in_hud", "NoAbnormalsInHUD");
+            Parse("enable_overlay", "EnableOverlay");
+            ParseColor("say_color", "SayColor");
             ParseColor("alliance_color", "AllianceColor");
             ParseColor("area_color", "AreaColor");
             ParseColor("guild_color", "GuildColor");
@@ -219,238 +106,200 @@ namespace Data
             ParseColor("trading_color", "TradingColor");
             ParseColor("emotes_color", "EmotesColor");
             ParseColor("private_channel_color", "PrivateChannelColor");
-
-            ParseLocation();
+            PopupNotificationLocation = ParseLocation(_xml.Root, "popup_notification_location");
+            Location = ParseLocation(_xml.Root);
+            ParseWindowStatus("boss_gage_window", "BossGageStatus");
+            ParseWindowStatus("debuff_uptime_window", "DebuffsStatus");
+            ParseWindowStatus("upload_history_window", "HistoryStatus");
             ParseOpacity();
-            ParseTeraDps();
-            ParseDiscord();
+            ParseOldDpsServers();
+            ParseDpsServers();
             ParseLanguage();
             ParseUILanguage();
             Parse("date_in_excel_path", "DateInExcelPath");
-            if (DateInExcelPath)
-                ExcelPathTemplate = "{Area}/{Date}/{Boss} {Time} {User}";
+            if (DateInExcelPath) { ExcelPathTemplate = "{Area}/{Date}/{Boss} {Time} {User}"; }
+        }
+
+        public bool EnableOverlay = false;
+        public Color WhisperColor = Brushes.Pink.Color;
+        public Color AllianceColor = Brushes.Green.Color;
+        public Color AreaColor = Brushes.Purple.Color;
+        public Color GeneralColor = Brushes.Yellow.Color;
+        public Color GroupColor = Brushes.Cyan.Color;
+        public Color GuildColor = Brushes.LightGreen.Color;
+        public Color RaidColor = Brushes.Orange.Color;
+        public Color SayColor = Brushes.White.Color;
+        public Color TradingColor = Brushes.Sienna.Color;
+        public Color EmotesColor = Brushes.White.Color;
+        public Color PrivateChannelColor = Brushes.Red.Color;
+        public Point Location = new Point(0, 0);
+        public Point PopupNotificationLocation = new Point(0, 0);
+        public string Language = "Auto";
+        public string UILanguage = "Auto";
+        public double MainWindowOpacity = 0.5;
+        public double OtherWindowOpacity = 0.9;
+        public int LFDelay = 150;
+        public WindowStatus BossGageStatus = new WindowStatus(new Point(0, 0), true, 1);
+        public WindowStatus DebuffsStatus = new WindowStatus(new Point(0, 0), false, 1);
+        public WindowStatus HistoryStatus = new WindowStatus(new Point(0, 0), false, 1);
+        public string ExcelSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ShinraMeter/");
+        public double Scale = 1;
+        public bool PartyOnly = false;
+        public bool RememberPosition = true;
+        public bool AutoUpdate = true;
+        public bool Winpcap = true;
+        public bool InvisibleUi = false;
+        public bool NoPaste = false;
+        public bool AllowTransparency = true;
+        public bool AlwaysVisible = false;
+        public bool Topmost = true;
+        public bool Debug = true;
+        public bool Excel = false;
+        public int ExcelCMADPSSeconds = 1;
+        public bool ShowHealCrit = true;
+        public bool ShowCritDamageRate = false;
+        public bool OnlyBoss = false;
+        public bool DetectBosses = false;
+
+        public List<DpsServerData> DpsServers = new List<DpsServerData> { DpsServerData.Moongourd, DpsServerData.TeraLogs };
+        public List<int> BlackListAreaId = new List<int>();
+
+        public string ExcelPathTemplate = "{Area}/{Boss} {Date} {Time} {User}";
+        public int NumberOfPlayersDisplayed = 5;
+        public bool MeterUserOnTop = false;
+        public bool LowPriority = true;
+        public bool EnableChat = true;
+        public bool CopyInspect = true;
+        public bool ShowAfkEventsIngame = false;
+        public bool DisablePartyEvent = false;
+        public bool RemoveTeraAltEnterHotkey = true;
+        public bool FormatPasteString = true;
+        public bool MuteSound = false;
+        public int IdleResetTimeout = 0;
+        public bool DateInExcelPath = false;
+        public bool ShowTimeLeft = false;
+        public bool NoAbnormalsInHUD = false;
+
+        private void ParseWindowStatus(string xmlName, string settingName)
+        {
+            var root = _xml.Root;
+            var xml = root?.Element(xmlName);
+            if (xml == null) { return; }
+            var setting = GetType().GetField(settingName);
+            var currentSetting = (WindowStatus) setting.GetValue(this);
+            var location = ParseLocation(xml);
+
+            var xmlVisible = xml.Attribute("visible");
+            var visibleSuccess = bool.TryParse(xmlVisible?.Value ?? "false", out bool visible);
+            var xmlScale = xml.Attribute("scale");
+            var scaleSuccess = double.TryParse(xmlScale?.Value ?? "0" , NumberStyles.Float, CultureInfo.InvariantCulture, out double scale);
+            setting.SetValue(this, new WindowStatus(location, visibleSuccess ? visible : currentSetting.Visible, scaleSuccess ? scale>0 ? scale : Scale : Scale));
         }
 
         private void ParseColor(string xmlName, string settingName)
         {
             var root = _xml.Root;
             var xml = root?.Element(xmlName);
-            if (xml == null) return;
-            var setting = this.GetType().GetProperty(settingName);
-            setting.SetValue(this, (Color)ColorConverter.ConvertFromString(xml.Value), null);
+            if (xml == null) { return; }
+            var setting = GetType().GetField(settingName);
+            setting.SetValue(this, (Color) ColorConverter.ConvertFromString(xml.Value));
         }
 
-        private void ParseTeraDps()
+
+        private void ParseOldDpsServers()
         {
             var root = _xml.Root;
-            var teradps = root?.Element("teradps.io");
-            var user = teradps?.Element("user");
-            if (user == null) return;
+            var teradps = root.Element("teradps.io");
+            if(teradps == null) { return; }
             var token = teradps.Element("token");
-            if (token == null) return;
-
-            TeraDpsToken = token.Value;
-            TeraDpsUser = user.Value;
-
-            if (TeraDpsToken == null || TeraDpsUser == null)
-            {
-                TeraDpsToken = "";
-                TeraDpsUser = "";
-            }
+            if (token != null) { DpsServerData.Moongourd.Token = token.Value; }
             var exp = teradps.Element("enabled");
-            if (exp == null) return;
-            bool val;
-            var parseSuccess = bool.TryParse(exp.Value, out val);
-            if (parseSuccess)
+            if (exp != null)
             {
-                SiteExport = val;
+                var parseSuccess = bool.TryParse(exp.Value, out bool val);
+                DpsServerData.Moongourd.Enabled = val;
+                DpsServerData.TeraLogs.Enabled = val;
             }
             var privateS = teradps.Element("private_servers");
-            if (privateS == null) return;
+            if (privateS == null) { return; }
             var exp1 = privateS.Attribute("enabled");
-            parseSuccess = bool.TryParse(exp1?.Value??"false", out val);
-            if (parseSuccess)
-            {
-                PrivateServerExport = val;
-            }
-            if (privateS.HasElements) PrivateDpsServers=new List<string>();else return;
+            var parseS = bool.TryParse(exp1?.Value ?? "false", out bool enabled);
+            if (!parseS || !privateS.HasElements) { return; }
             foreach (var server in privateS.Elements())
             {
-                PrivateDpsServers.Add(server.Value);
+                if (String.IsNullOrWhiteSpace(server?.Value)) { continue; }
+                DpsServerData serverData = new DpsServerData(new Uri(server.Value), null, null, null, null, enabled);
+                DpsServers.Add(serverData);
             }
         }
 
 
-        private void ParseDiscord()
+        private void ParseDpsServers()
         {
             var root = _xml.Root;
-            var discord = root?.Element("discord");
-            var user = discord?.Element("login");
-            if (user == null) return;
-            var password = discord.Element("password");
-            if (password == null) return;
-
-            DiscordPassword = password.Value;
-            DiscordLogin = user.Value;
-
-            if (DiscordPassword == null || DiscordLogin == null)
+            var teradps = root.Element("dps_servers");
+            if(teradps == null) { return; }
+            DpsServers = new List<DpsServerData>();
+            if (teradps.Elements("server") == null) { return; }
+            foreach(var server in teradps.Elements("server"))
             {
-                DiscordPassword = "";
-                DiscordLogin = "";
+                var username = server.Element("username");
+                var token = server.Element("token");
+                var enabled = server.Element("enabled");
+                var uploadUrl = server.Element("dps_url");
+                var allowedAreaUrl = server.Element("allowed_area_url");
+                var glyphUrl = server.Element("glyph_url");
+                var parseSuccess = bool.TryParse(enabled?.Value ?? "false", out bool enabledBool);
+                if(String.IsNullOrWhiteSpace(uploadUrl?.Value)) { continue; }
+                DpsServerData serverData = new DpsServerData(
+                    new Uri(uploadUrl.Value),
+                    String.IsNullOrWhiteSpace(allowedAreaUrl?.Value) ? null: new Uri(allowedAreaUrl.Value),
+                    String.IsNullOrWhiteSpace(glyphUrl?.Value) ? null : new Uri(glyphUrl.Value),
+                    username?.Value ?? null, token?.Value ?? null, enabledBool 
+                );
+                DpsServers.Add(serverData);
             }
 
-            var guilds = discord.Element("guilds");
-            if (guilds == null) return;
-            foreach(var guild in guilds.Elements())
+            if(teradps.Element("blacklist") == null) { return; }
+            if(teradps.Element("blacklist").Elements("id") == null) { return; }
+            foreach(var blacklistedAreaId in teradps.Element("blacklist").Elements("id"))
             {
-
-                ulong discordServer = 0;
-                ulong discordChannelGuildInfo = 0;
-                ulong discordChannelGuildQuest = 0;
-
-                var server = guild.Element("server");
-                if (server == null) return;
-               
-
-                ulong val;
-                var parseSuccess = ulong.TryParse(server.Value, out val);
-                if (parseSuccess)
-                {
-                    discordServer = val;
-                }
-                
-
-                var guild_infos_channel = guild.Element("guild_infos_channel");
-                if (guild_infos_channel == null) return;
-                
-                parseSuccess = ulong.TryParse(guild_infos_channel.Value, out val);
-                if (parseSuccess)
-                {
-                    discordChannelGuildInfo = val;
-                }
-                
-
-                var guild_quests_channel = guild.Element("guild_quests_channel");
-                if (guild_quests_channel == null) return;
-                
-                parseSuccess = ulong.TryParse(guild_quests_channel.Value, out val);
-                if (parseSuccess)
-                {
-                    discordChannelGuildQuest = val;
-                }
-
-                string guildInfosText = ":dart: {guild_guildname}  :dart:\n\n{guild_master} - {guild_size}\n{gold_label}: {guild_gold}\n{xp_label} for next level: {guild_xp_to_next_level}\nCreation time: {guild_creationtime}\nQuest done status: {guild_number_quest_done}/{guild_total_number_quest}\n";
-                string questInfoText = ":dart: {quest_guildname} - {quest_type} - {quest_size} :dart:\n\nTime remaining: {quest_time_remaining}\nIs bam quest: {quest_is_bam_quest}\n{targets}\n{rewards}\n";
-                string questListInfoText = "{quest_type} - {targets}\n";
-                string questListHeaderText = "----NoActiveQuest----\n\n";
-                string rewardFooterText = "";
-                string rewardContentText = "{reward_name}: {reward_amount}\n";
-                string rewardHeaderText = "---------\n";
-
-                string targetHeaderText = "";
-                string targetContentText = "{target_name}: {target_current_count}/{target_total_count}\n";
-                string targetFooterText = "";
-                string questNoActiveText = ":dart:   {guild_guildname}   :dart:\n\n{no_quest_text}\n\n{quest_list}\n";
-
-                var guildInfosTextElement = guild.Element("guild_infos_text");
-                if (guildInfosTextElement != null) guildInfosText = guildInfosTextElement.Value;
-
-                var questInfoTextElement = guild.Element("quest_infos_text");
-                if (questInfoTextElement != null) questInfoText = questInfoTextElement.Value;
-
-                var questListInfoTextElement = guild.Element("quest_list_infos_text");
-                if (questListInfoTextElement != null) questListInfoText = questListInfoTextElement.Value;
-
-                var questListHeaderTextElement = guild.Element("quest_list_infos_header_text");
-                if (questListHeaderTextElement != null) questListHeaderText = questListHeaderTextElement.Value;
-
-                var rewardFooterTextElement = guild.Element("reward_footer_text");
-                if (rewardFooterTextElement != null) rewardFooterText = rewardFooterTextElement.Value;
-
-                var rewardContentTextElement = guild.Element("reward_content_text");
-                if (rewardContentTextElement != null) rewardContentText = rewardContentTextElement.Value;
-
-                var rewardHeaderTextElement = guild.Element("reward_header_text");
-                if (rewardHeaderTextElement != null) rewardHeaderText = rewardHeaderTextElement.Value;
-
-                var targetHeaderTextElement = guild.Element("target_header_text");
-                if (targetHeaderTextElement != null) targetHeaderText = targetHeaderTextElement.Value;
-
-                var targetContentTextElement = guild.Element("target_content_text");
-                if (targetContentTextElement != null) targetContentText = targetContentTextElement.Value;
-
-                var targetFooterTextElement = guild.Element("target_footer_text");
-                if (targetFooterTextElement != null) targetFooterText = targetFooterTextElement.Value;
-
-                var questNoActiveTextElement = guild.Element("no_active_quest_text");
-                if (questNoActiveTextElement != null) questNoActiveText = questNoActiveTextElement.Value;
-
-                DiscordInfoByGuild.Add(guild.Name.ToString().ToLowerInvariant(), new DiscordInfoByGuild(
-                    discordServer,
-                    discordChannelGuildInfo,
-                    discordChannelGuildQuest,
-                    guildInfosText,
-                    questInfoText,
-                    questListInfoText,
-                    questListHeaderText,
-                    rewardFooterText,
-                    rewardContentText,
-                    rewardHeaderText,
-                    targetHeaderText,
-                    targetContentText,
-                    targetFooterText,
-                    questNoActiveText
-                    
-                    ));
+                var parseSuccess = int.TryParse(blacklistedAreaId.Value, out int areaId);
+                if (parseSuccess){ blacklistedAreaId.Add(areaId); }
             }
-
-         
         }
 
-        private void ParseLocation()
+        private Point ParseLocation(XElement root, string elementName = "location")
         {
             double x, y;
-            var root = _xml.Root;
-
-            var location = root?.Element("location");
-            if (location == null) return;
+            var location = root?.Element(elementName);
+            if (location == null) { return new Point(); }
             var xElement = location.Element("x");
             var yElement = location.Element("y");
-            if (xElement == null || yElement == null) return;
+            if (xElement == null || yElement == null) { return new Point(); }
 
             var xParsed = double.TryParse(xElement.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out x);
             var yParsed = double.TryParse(yElement.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out y);
-            if (xParsed && yParsed)
-            {
-                Location = new Point(x, y);
-            }
+            return xParsed && yParsed ? new Point(x, y) : new Point();
         }
 
         private void ParseLanguage()
         {
             var root = _xml.Root;
             var languageElement = root?.Element("language");
-            if (languageElement == null) return;
+            if (languageElement == null) { return; }
             Language = languageElement.Value;
-            if (
-                !Array.Exists(new[] {"Auto", "EU-EN", "EU-FR", "EU-GER", "NA", "RU", "JP", "TW", "KR"},
-                    s => s.Equals(Language))) Language = "Auto";
+            if (!Array.Exists(new[] {"Auto", "EU-EN", "EU-FR", "EU-GER", "NA", "RU", "JP", "TW", "KR"}, s => s.Equals(Language))) { Language = "Auto"; }
         }
 
         private void ParseUILanguage()
         {
             var root = _xml.Root;
             var languageElement = root?.Element("ui_language");
-            if (languageElement == null) return;
+            if (languageElement == null) { return; }
             UILanguage = languageElement.Value;
-            try
-            {
-                CultureInfo.GetCultureInfo(UILanguage);
-            }
-            catch
-            {
-                UILanguage = "Auto";
-            }
+            try { CultureInfo.GetCultureInfo(UILanguage); }
+            catch { UILanguage = "Auto"; }
         }
 
         private void ParseOpacity()
@@ -461,37 +310,44 @@ namespace Data
             if (mainWindowElement != null)
             {
                 int mainWindowOpacity;
-                if (int.TryParse(mainWindowElement.Value, out mainWindowOpacity))
-                {
-                    MainWindowOpacity = (double) mainWindowOpacity/100;
-                }
+                if (int.TryParse(mainWindowElement.Value, out mainWindowOpacity)) { MainWindowOpacity = (double) mainWindowOpacity / 100; }
             }
-            var skillWindowElement = opacity?.Element("skillWindow");
-            if (skillWindowElement == null) return;
-            int skillWindowOpacity;
-            if (int.TryParse(skillWindowElement.Value, out skillWindowOpacity))
-            {
-                SkillWindowOpacity = (double)skillWindowOpacity / 100;
-            }
+            var otherWindowElement = opacity?.Element("otherWindow");
+            if (otherWindowElement == null) { return; }
+            int otherWindowOpacity;
+            if (int.TryParse(otherWindowElement.Value, out otherWindowOpacity)) { OtherWindowOpacity = (double) otherWindowOpacity / 100; }
         }
 
         public void Save()
         {
-            if (_filestream == null)
-            {
-                return;
-            }
+            if (_filestream == null) { return; }
 
 
             var xml = new XDocument(new XDeclaration("1.0", "utf-8", "yes"), new XElement("window"));
             xml.Root.Add(new XElement("location"));
             xml.Root.Element("location").Add(new XElement("x", Location.X.ToString(CultureInfo.InvariantCulture)));
             xml.Root.Element("location").Add(new XElement("y", Location.Y.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Add(new XElement("scale", Scale.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Add(new XElement("popup_notification_location"));
+            xml.Root.Element("popup_notification_location").Add(new XElement("x", PopupNotificationLocation.X.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Element("popup_notification_location").Add(new XElement("y", PopupNotificationLocation.Y.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Add(new XElement("boss_gage_window", new XAttribute("visible", BossGageStatus.Visible), new XAttribute("scale", BossGageStatus.Scale)));
+            xml.Root.Element("boss_gage_window").Add(new XElement("location"));
+            xml.Root.Element("boss_gage_window").Element("location").Add(new XElement("x", BossGageStatus.Location.X.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Element("boss_gage_window").Element("location").Add(new XElement("y", BossGageStatus.Location.Y.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Add(new XElement("debuff_uptime_window", new XAttribute("visible", DebuffsStatus.Visible), new XAttribute("scale", DebuffsStatus.Scale)));
+            xml.Root.Element("debuff_uptime_window").Add(new XElement("location"));
+            xml.Root.Element("debuff_uptime_window").Element("location").Add(new XElement("x", DebuffsStatus.Location.X.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Element("debuff_uptime_window").Element("location").Add(new XElement("y", DebuffsStatus.Location.Y.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Add(new XElement("upload_history_window", new XAttribute("visible", HistoryStatus.Visible), new XAttribute("scale", HistoryStatus.Scale)));
+            xml.Root.Element("upload_history_window").Add(new XElement("location"));
+            xml.Root.Element("upload_history_window").Element("location").Add(new XElement("x", HistoryStatus.Location.X.ToString(CultureInfo.InvariantCulture)));
+            xml.Root.Element("upload_history_window").Element("location").Add(new XElement("y", HistoryStatus.Location.Y.ToString(CultureInfo.InvariantCulture)));
             xml.Root.Add(new XElement("language", Language));
             xml.Root.Add(new XElement("ui_language", UILanguage));
             xml.Root.Add(new XElement("opacity"));
-            xml.Root.Element("opacity").Add(new XElement("mainWindow", MainWindowOpacity*100));
-            xml.Root.Element("opacity").Add(new XElement("skillWindow", SkillWindowOpacity*100));
+            xml.Root.Element("opacity").Add(new XElement("mainWindow", MainWindowOpacity * 100));
+            xml.Root.Element("opacity").Add(new XElement("otherWindow", OtherWindowOpacity * 100));
             xml.Root.Add(new XElement("autoupdate", AutoUpdate));
             xml.Root.Add(new XElement("remember_position", RememberPosition));
             xml.Root.Add(new XElement("winpcap", Winpcap));
@@ -504,7 +360,6 @@ namespace Data
             xml.Root.Add(new XElement("excel_save_directory", ExcelSaveDirectory));
             xml.Root.Add(new XElement("excel_cma_dps_seconds", ExcelCMADPSSeconds));
             xml.Root.Add(new XElement("always_visible", AlwaysVisible));
-            xml.Root.Add(new XElement("scale", Scale.ToString(CultureInfo.InvariantCulture)));
             xml.Root.Add(new XElement("lf_delay", LFDelay));
             xml.Root.Add(new XElement("partyonly", PartyOnly));
             xml.Root.Add(new XElement("showhealcrit", ShowHealCrit));
@@ -533,49 +388,32 @@ namespace Data
             xml.Root.Add(new XElement("disable_party_event", DisablePartyEvent));
             xml.Root.Add(new XElement("show_afk_events_ingame", ShowAfkEventsIngame));
             xml.Root.Add(new XElement("idle_reset_timeout", IdleResetTimeout));
+            xml.Root.Add(new XElement("no_paste", NoPaste));
+            xml.Root.Add(new XElement("no_abnormals_in_hud", NoAbnormalsInHUD));
+            xml.Root.Add(new XElement("enable_overlay", EnableOverlay));
 
-            xml.Root.Add(new XElement("teradps.io"));
-            xml.Root.Element("teradps.io").Add(new XElement("user", TeraDpsUser));
-            xml.Root.Element("teradps.io").Add(new XElement("token", TeraDpsToken));
-            xml.Root.Element("teradps.io").Add(new XElement("enabled", SiteExport));
-            xml.Root.Element("teradps.io").Add(new XElement("private_servers", new XAttribute("enabled", PrivateServerExport)));
-            PrivateDpsServers.ForEach(x=>
-                xml.Root.Element("teradps.io").Element("private_servers").Add(new XElement("server",x))
-                );
-            
-
-
-            xml.Root.Add(new XElement("discord"));
-            xml.Root.Element("discord").Add(new XElement("login", DiscordLogin));
-            xml.Root.Element("discord").Add(new XElement("password", DiscordPassword));
-            xml.Root.Element("discord").Add(new XElement("guilds"));
-            foreach (var discordData in DiscordInfoByGuild)
+            xml.Root.Add(new XElement("dps_servers"));
+            foreach(var server in DpsServers)
             {
-                var name = discordData.Key.ToString().ToLowerInvariant();
-                xml.Root.Element("discord").Element("guilds").Add(new XElement(name));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("guild_infos_channel", discordData.Value.DiscordChannelGuildInfo));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("guild_quests_channel", discordData.Value.DiscordChannelGuildQuest));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("server", discordData.Value.DiscordServer));
-
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("guild_infos_text", discordData.Value.GuildInfosText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("quest_infos_text", discordData.Value.QuestInfoText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("quest_list_infos_text", discordData.Value.QuestListInfoText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("quest_list_infos_header_text", discordData.Value.QuestListHeaderText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("reward_footer_text", discordData.Value.RewardFooterText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("reward_content_text", discordData.Value.RewardContentText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("reward_header_text", discordData.Value.RewardHeaderText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("target_header_text", discordData.Value.TargetHeaderText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("target_content_text", discordData.Value.TargetContentText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("target_footer_text", discordData.Value.TargetFooterText));
-                xml.Root.Element("discord").Element("guilds").Element(name).Add(new XElement("no_active_quest_text", discordData.Value.QuestNoActiveText));
+                var serverXml = new XElement("server");
+                serverXml.Add(new XElement("username", server.Username));
+                serverXml.Add(new XElement("token", server.Token));
+                serverXml.Add(new XElement("enabled", server.Enabled));
+                serverXml.Add(new XElement("dps_url", server.UploadUrl));
+                serverXml.Add(new XElement("glyph_url", server.GlyphUrl));
+                serverXml.Add(new XElement("allowed_area_url", server.AllowedAreaUrl));
+                xml.Root.Element("dps_servers").Add(serverXml);
             }
 
-
-            _filestream.SetLength(0); 
-            using (var sw = new StreamWriter(_filestream, new UTF8Encoding(true)))
+            xml.Root.Element("dps_servers").Add(new XElement("blacklist"));
+            foreach (var areaId in BlackListAreaId)
             {
-                sw.Write(xml.Declaration + Environment.NewLine + xml);
+                var blacklistId = new XElement("id", areaId);
+                xml.Root.Element("dps_servers").Element("blacklist").Add(blacklistId);
             }
+
+            _filestream.SetLength(0);
+            using (var sw = new StreamWriter(_filestream, new UTF8Encoding(true))) { sw.Write(xml.Declaration + Environment.NewLine + xml); }
             _filestream.Close();
         }
 
@@ -583,48 +421,33 @@ namespace Data
         {
             var root = _xml.Root;
             var xml = root?.Element(xmlName);
-            if (xml == null) return;
-            var setting = this.GetType().GetProperty(settingName);
-            if (setting.PropertyType == typeof(int))
+            if (xml == null) { return; }
+            var setting = GetType().GetField(settingName);
+            if (setting.FieldType == typeof(int))
             {
                 int value;
                 var parseSuccess = int.TryParse(xml.Value, out value);
-                if (parseSuccess)
-                {
-                    setting.SetValue(this, value, null);
-                }
+                if (parseSuccess) { setting.SetValue(this, value); }
             }
-            if (setting.PropertyType == typeof(double))
+            if (setting.FieldType == typeof(double))
             {
                 double value;
                 var parseSuccess = double.TryParse(xml.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
-                if (parseSuccess)
-                {
-                    setting.SetValue(this, value, null);
-                }
+                if (parseSuccess) { setting.SetValue(this, value); }
             }
-            if (setting.PropertyType == typeof(float))
+            if (setting.FieldType == typeof(float))
             {
                 float value;
                 var parseSuccess = float.TryParse(xml.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
-                if (parseSuccess)
-                {
-                    setting.SetValue(this, value, null);
-                }
+                if (parseSuccess) { setting.SetValue(this, value); }
             }
-            if (setting.PropertyType == typeof(bool))
+            if (setting.FieldType == typeof(bool))
             {
                 bool value;
                 var parseSuccess = bool.TryParse(xml.Value, out value);
-                if (parseSuccess)
-                {
-                    setting.SetValue(this, value, null);
-                }
+                if (parseSuccess) { setting.SetValue(this, value); }
             }
-            if (setting.PropertyType == typeof(string))
-            {
-                setting.SetValue(this, xml.Value, null);
-            }
+            if (setting.FieldType == typeof(string)) { setting.SetValue(this, xml.Value); }
         }
     }
 }

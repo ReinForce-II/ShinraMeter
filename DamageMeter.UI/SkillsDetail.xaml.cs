@@ -78,14 +78,24 @@ namespace DamageMeter.UI
                     SkillsList.Items.Add(header);
                 }
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                case Database.Database.Type.Counter:
+                {
+                    var header = new SkillsHeaderCounter();
+                    ContentWidth = header.Width;
+
+                    header.LabelName.MouseRightButtonUp += LabelNameOnMouseRightButtonUp;
+                    header.LabelNumberHit.MouseRightButtonUp += LabelNumberHitCounterOnMouseRightButtonUp;
+                    _currentSortedLabel = header.LabelNumberHit;
+                    SkillsList.Items.Add(header);
+                }
+                    break;
+                default: throw new ArgumentOutOfRangeException();
             }
 
             Repaint();
         }
 
-        public double ContentWidth { get; private set; }
+        public double ContentWidth { get; }
 
         private void LabelBiggestHealHitOnMouseRightButtonUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
@@ -163,6 +173,10 @@ namespace DamageMeter.UI
             ChangeSort(SortBy.Amount, (Label) sender, SkillsHeaderMana.Mana);
         }
 
+        private void LabelNumberHitCounterOnMouseRightButtonUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            ChangeSort(SortBy.NumberHits, (Label)sender, SkillsHeaderCounter.Hits);
+        }
 
         private void Sort()
         {
@@ -204,78 +218,65 @@ namespace DamageMeter.UI
                         case SortBy.BigHit:
                             _skills = from skill in _skills orderby skill.BiggestHit() descending select skill;
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        default: throw new ArgumentOutOfRangeException();
                     }
                     break;
                 case SortOrder.Ascending:
                     switch (_sortBy)
                     {
                         case SortBy.Amount:
-                            _skills = from skill in _skills orderby skill.Amount() ascending select skill;
+                            _skills = from skill in _skills orderby skill.Amount() select skill;
                             break;
                         case SortBy.AvgCrit:
-                            _skills = from skill in _skills orderby skill.AvgCrit() ascending select skill;
+                            _skills = from skill in _skills orderby skill.AvgCrit() select skill;
                             break;
                         case SortBy.AvgHit:
-                            _skills = from skill in _skills orderby skill.AvgWhite() ascending select skill;
+                            _skills = from skill in _skills orderby skill.AvgWhite() select skill;
                             break;
                         case SortBy.BigCrit:
-                            _skills = from skill in _skills orderby skill.BiggestCrit() ascending select skill;
+                            _skills = from skill in _skills orderby skill.BiggestCrit() select skill;
                             break;
                         case SortBy.DamagePercent:
-                            _skills = from skill in _skills orderby skill.DamagePercent() ascending select skill;
+                            _skills = from skill in _skills orderby skill.DamagePercent() select skill;
                             break;
                         case SortBy.Name:
-                            _skills = from entry in _skills orderby entry.Name ascending select entry;
+                            _skills = from entry in _skills orderby entry.Name select entry;
                             return;
                         case SortBy.NumberHits:
-                            _skills = from skill in _skills orderby skill.Hits() ascending select skill;
+                            _skills = from skill in _skills orderby skill.Hits() select skill;
                             break;
                         case SortBy.NumberCrits:
-                            _skills = from skill in _skills orderby skill.Crits() ascending select skill;
+                            _skills = from skill in _skills orderby skill.Crits() select skill;
                             break;
                         case SortBy.CritRate:
-                            _skills = from skill in _skills orderby skill.CritRate() ascending select skill;
+                            _skills = from skill in _skills orderby skill.CritRate() select skill;
                             break;
                         case SortBy.Avg:
-                            _skills = from skill in _skills orderby skill.Avg() ascending select skill;
+                            _skills = from skill in _skills orderby skill.Avg() select skill;
                             break;
                         case SortBy.BigHit:
-                            _skills = from skill in _skills orderby skill.BiggestHit() ascending select skill;
+                            _skills = from skill in _skills orderby skill.BiggestHit() select skill;
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        default: throw new ArgumentOutOfRangeException();
                     }
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: throw new ArgumentOutOfRangeException();
             }
         }
 
         private void ChangeSort(SortBy sortby, Label sender, string labelstring)
         {
-            if (_sortBy == sortby)
-            {
-                _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
-            }
+            if (_sortBy == sortby) { _sortOrder = _sortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending; }
             else
             {
-                _currentSortedLabel.Content =
-                    ((string) _currentSortedLabel.Content).Remove(((string) _currentSortedLabel.Content).Length - 1);
+                _currentSortedLabel.Content = ((string) _currentSortedLabel.Content).Remove(((string) _currentSortedLabel.Content).Length - 1);
                 _sortBy = sortby;
                 _sortOrder = SortOrder.Descending;
                 _currentSortedLabel = sender;
             }
 
-            if (_sortOrder == SortOrder.Ascending)
-            {
-                sender.Content = labelstring + "↑";
-            }
-            else
-            {
-                sender.Content = labelstring + "↓";
-            }
+            if (_sortOrder == SortOrder.Ascending) { sender.Content = labelstring + "↑"; }
+            else { sender.Content = labelstring + "↓"; }
             Repaint();
         }
 
@@ -309,27 +310,13 @@ namespace DamageMeter.UI
             ChangeSort(SortBy.Name, (Label) sender, SkillsHeaderDps.SkillName);
         }
 
-        private void Skills_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var w = Window.GetWindow(this);
-            try
-            {
-                w?.DragMove();
-            }
-            catch
-            {
-                Console.WriteLine(@"Exception move");
-            }
-        }
+        private void DragWindow(object sender, MouseButtonEventArgs e) { ((ClickThrouWindow)Window.GetWindow(this))?.Move(sender, e); }
 
         private List<ISkill> Clear()
         {
             var skills = new List<ISkill>();
             var header = SkillsList.Items[0];
-            for (var i = 1; i < SkillsList.Items.Count; i++)
-            {
-                skills.Add((ISkill) SkillsList.Items[i]);
-            }
+            for (var i = 1; i < SkillsList.Items.Count; i++) { skills.Add((ISkill) SkillsList.Items[i]); }
             SkillsList.Items.Clear();
             SkillsList.Items.Add(header);
             return skills;
@@ -344,7 +331,7 @@ namespace DamageMeter.UI
                 var updated = -1;
                 for (var i = 0; i < oldSkills.Count; i++)
                 {
-                    if (skill.Name != oldSkills[i].SkillNameIdent()) continue;
+                    if (skill.Name != oldSkills[i].SkillNameIdent()) { continue; }
                     oldSkills[i].Update(skill);
                     SkillsList.Items.Add(oldSkills[i]);
                     updated = i;
@@ -367,10 +354,18 @@ namespace DamageMeter.UI
                     case Database.Database.Type.Mana:
                         SkillsList.Items.Add(new SkillMana(skill));
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    case Database.Database.Type.Counter:
+                        SkillsList.Items.Add(new SkillCounter(skill));
+                        break;
+                    default: throw new ArgumentOutOfRangeException();
                 }
             }
+        }
+
+        private void SkillsList_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
 
 
@@ -393,12 +388,6 @@ namespace DamageMeter.UI
         {
             Ascending = 1,
             Descending = 2
-        }
-
-        private void SkillsList_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset - e.Delta);
-            e.Handled = true;
         }
     }
 }

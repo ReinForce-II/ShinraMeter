@@ -569,7 +569,7 @@
     <value>未知技能</value>
   </data>
   <data name="UploadGlyphBuild" xml:space="preserve">
-    <value>上传纹章配置至moongourd.com</value>
+    <value>上传纹章配置</value>
   </data>
   <data name="Warrior" xml:space="preserve">
     <value>剑斗士</value>
@@ -588,12 +588,6 @@
   </data>
   <data name="Your_hotkeys_xml_file_is_invalid" xml:space="preserve">
     <value>你的hotkeys.xml文件无效</value>
-  </data>
-  <data name="PrivateServerExport" xml:space="preserve">
-    <value>导出到私有DPS服务器</value>
-  </data>
-  <data name="PrivateServerURL" xml:space="preserve">
-    <value>私有服务器URL</value>
   </data>
   <data name="MuteSound" xml:space="preserve">
     <value>静音</value>

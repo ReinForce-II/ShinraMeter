@@ -21,18 +21,9 @@ namespace DamageMeter.UI.SkillDetail
             var chained = skill.IsChained;
             var hit = skill.Detail;
 
-            if (skill.IsHotDot)
-            {
-                hit = LP.Hot;
-            }
-            if (hit != null)
-            {
-                LabelName.Content = hit;
-            }
-            if (chained == true)
-            {
-                LabelName.Content += " " + LP.Chained;
-            }
+            if (skill.IsHotDot) { hit = LP.Hot; }
+            if (hit != null) { LabelName.Content = hit; }
+            if (chained == true) { LabelName.Content += " " + LP.Chained; }
 
             LabelName.ToolTip = skill.Id;
             LabelCritRateHeal.Content = skillAggregate.CritRate(skill.Id) + "%";
@@ -46,17 +37,6 @@ namespace DamageMeter.UI.SkillDetail
             LabelAverage.Content = FormatHelpers.Instance.FormatValue((long) skillAggregate.Avg(skill.Id));
         }
 
-        private void MoveWindow(object sender, MouseButtonEventArgs e)
-        {
-            var w = Window.GetWindow(this);
-            try
-            {
-                w?.DragMove();
-            }
-            catch
-            {
-                Console.WriteLine(@"Exception move");
-            }
-        }
+        private void DragWindow(object sender, MouseButtonEventArgs e) { ((ClickThrouWindow)Window.GetWindow(this))?.Move(sender, e); }
     }
 }

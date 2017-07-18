@@ -7,8 +7,10 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using Data;
+using Application = System.Windows.Application;
 
 namespace DamageMeter
 {
@@ -28,11 +30,23 @@ namespace DamageMeter
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;        // x position of upper-left corner
+            public int Top;         // y position of upper-left corner
+            public int Right;       // x position of lower-right corner
+            public int Bottom;      // y position of lower-right corner
+        }
+
         private static IntPtr FindTeraWindow()
         {
-            var error0 = Marshal.GetLastWin32Error();
+            Marshal.GetLastWin32Error();
             var result = FindWindow("LaunchUnrealUWindowsClient", "TERA");
-            var error = Marshal.GetLastWin32Error();
+            Marshal.GetLastWin32Error();
             //if (result == IntPtr.Zero && (error != 0))
             //    throw new Win32Exception();
             return result;
@@ -41,8 +55,7 @@ namespace DamageMeter
         public static bool SendString(string s)
         {
             var teraWindow = FindTeraWindow();
-            if (teraWindow == IntPtr.Zero)
-                return false;
+            if (teraWindow == IntPtr.Zero) { return false; }
 
             SendString(teraWindow, s);
 
@@ -53,25 +66,13 @@ namespace DamageMeter
         {
             var lfDelay = BasicTeraData.Instance.WindowData.LFDelay;
             Thread.Sleep(lfDelay);
-            if (!PostMessage(hWnd, WM_KEYDOWN, VK_RETURN, 0))
-            {
-                throw new Win32Exception();
-            }
+            if (!PostMessage(hWnd, WM_KEYDOWN, VK_RETURN, 0)) { throw new Win32Exception(); }
             Thread.Sleep(1);
-            if (!PostMessage(hWnd, WM_KEYUP, VK_RETURN, 0))
-            {
-                throw new Win32Exception();
-            }
+            if (!PostMessage(hWnd, WM_KEYUP, VK_RETURN, 0)) { throw new Win32Exception(); }
             Thread.Sleep(50);
-            if (!PostMessage(hWnd, WM_KEYDOWN, VK_RETURN, 0))
-            {
-                throw new Win32Exception();
-            }
+            if (!PostMessage(hWnd, WM_KEYDOWN, VK_RETURN, 0)) { throw new Win32Exception(); }
             Thread.Sleep(1);
-            if (!PostMessage(hWnd, WM_KEYUP, VK_RETURN, 0))
-            {
-                throw new Win32Exception();
-            }
+            if (!PostMessage(hWnd, WM_KEYUP, VK_RETURN, 0)) { throw new Win32Exception(); }
             Thread.Sleep(lfDelay);
         }
 
@@ -79,16 +80,10 @@ namespace DamageMeter
         {
             foreach (var character in s)
             {
-                if (character == '\\')
-                {
-                    NewLine(hWnd);
-                }
+                if (character == '\\') { NewLine(hWnd); }
                 else
                 {
-                    if (!PostMessage(hWnd, WM_CHAR, character, 0))
-                    {
-                        throw new Win32Exception();
-                    }
+                    if (!PostMessage(hWnd, WM_CHAR, character, 0)) { throw new Win32Exception(); }
                     Thread.Sleep(1);
                 }
             }
@@ -98,15 +93,23 @@ namespace DamageMeter
         {
             var teraWindow = FindTeraWindow();
             var activeWindow = GetForegroundWindow();
-            return (teraWindow != IntPtr.Zero) && (teraWindow == activeWindow);
+            return teraWindow != IntPtr.Zero && teraWindow == activeWindow;
+        }
+
+        public static bool IsTeraFullScreen()
+        {
+            var teraWindow = FindTeraWindow();
+            if (teraWindow == IntPtr.Zero) return false;
+            var screen = Screen.FromHandle(teraWindow);
+            RECT rc;
+            return GetWindowRect(teraWindow,out rc) && screen.Bounds.Width==rc.Right-rc.Left && screen.Bounds.Height==rc.Bottom-rc.Top;
         }
 
         public static bool IsMeterActive()
         {
             var activeWindow = GetForegroundWindow();
-            return (from Window window in Application.Current.Windows
-                    select new WindowInteropHelper(window) 
-                    into wih select wih.Handle).Any(hWnd => hWnd == activeWindow);
+            return (from Window window in Application.Current.Windows select new WindowInteropHelper(window) into wih select wih.Handle)
+                .Any(hWnd => hWnd == activeWindow);
         }
     }
 }

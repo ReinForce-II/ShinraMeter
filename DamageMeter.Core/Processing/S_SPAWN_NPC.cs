@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using Tera.Game;
+using Tera.Game.Messages;
 
 namespace DamageMeter.Processing
 {
     internal static class S_SPAWN_NPC
     {
-        internal static void Process(Tera.Game.Messages.SpawnNpcServerMessage message)
+        internal static void Process(SpawnNpcServerMessage message)
         {
             NetworkController.Instance.EntityTracker.Update(message);
             DamageTracker.Instance.UpdateEntities(message);
