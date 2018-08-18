@@ -19,7 +19,7 @@ namespace Lang {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class LP {
@@ -255,6 +255,15 @@ namespace Lang {
         public static string Berserker {
             get {
                 return ResourceManager.GetString("Berserker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blur player names.
+        /// </summary>
+        public static string Blur_player_names {
+            get {
+                return ResourceManager.GetString("Blur_player_names", resourceCulture);
             }
         }
         
@@ -511,6 +520,24 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display only boss hit by meter user.
+        /// </summary>
+        public static string Display_only_boss_hit_by_meter_user {
+            get {
+                return ResourceManager.GetString("Display_only_boss_hit_by_meter_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timer based on aggro.
+        /// </summary>
+        public static string Display_timer_aggro_or_firsthit {
+            get {
+                return ResourceManager.GetString("Display_timer_aggro_or_firsthit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DOT.
         /// </summary>
         public static string Dot {
@@ -574,6 +601,15 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable discord&apos;s Rich Presence.
+        /// </summary>
+        public static string EnableRp {
+            get {
+                return ResourceManager.GetString("EnableRp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enrage.
         /// </summary>
         public static string Enrage {
@@ -585,20 +621,7 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_archer {
             get {
@@ -609,20 +632,7 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_berserker {
             get {
@@ -632,21 +642,18 @@ namespace Lang {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
-        ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
+        ///&lt;events&gt;	
+        ///	&lt;!-- Endurance debuff  --&gt;
+        ///	&lt;abnormality active=&quot;false&quot; ingame=&quot;true&quot; rewarn_timeout_seconds=&quot;5&quot; remaining_seconds_before_trigger=&quot;0&quot; trigger=&quot;MissingDuringFight&quot; target=&quot;Boss&quot;&gt;
         ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;10153140&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;200300&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;200301&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;200302&lt;/abnormality&gt;
         ///		&lt;/abnormalities&gt;
         ///		&lt;actions&gt;
         ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///				&lt;balloon title_text=&quot;{abnormality_name}&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string events_brawler {
             get {
@@ -658,21 +665,18 @@ namespace Lang {
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
         ///
-        ///	&lt;!-- Notification when something happen &amp; you are not on the Tera windows --&gt;
-        ///	&lt;common_afk&gt;
+        ///	&lt;!-- Adrenaline Rush --&gt;
+        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Self&quot; ignore_classes=&quot;Mystic,Priest&quot;&gt;
+        ///		&lt;abnormalities&gt;
+        ///			&lt;abnormality&gt;200701&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;200700&lt;/abnormality&gt;
+        ///		&lt;/abnormalities&gt;
         ///		&lt;actions&gt;
-        ///				&lt;notify&gt;
-        ///					&lt;balloon title_text=&quot;{afk_title}&quot; body_text=&quot;{afk_body}&quot; display_time=&quot;3000&quot; /&gt;
-        ///					&lt;beeps&gt;
-        ///						&lt;beep frequency=&quot;440&quot; duration=&quot;500&quot;/&gt;
-        ///					&lt;/beeps&gt;
-        ///				&lt;/notify&gt;
-        ///			&lt;/actions&gt;
-        ///	&lt;/common_afk&gt;
-        ///	
-        ///	&lt;!-- The boss became enraged --&gt;
-        ///	&lt;abnormality ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities [rest of string was truncated]&quot;;.
+        ///			&lt;notify&gt;
+        ///				&lt;text_to_speech text=&quot;{abnormality_name}&quot; voice_gender=&quot;Female&quot; voice_age=&quot;Adult&quot;  voice_position=&quot;0&quot; volume=&quot;80&quot; rate=&quot;+3&quot;/&gt;
+        ///			&lt;/notify&gt;
+        ///		&lt;/actions&gt;
+        ///	&lt;/abnormal [rest of string was truncated]&quot;;.
         /// </summary>
         public static string events_common {
             get {
@@ -683,20 +687,8 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///		
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_gunner {
             get {
@@ -706,24 +698,17 @@ namespace Lang {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
-        ///&lt;events&gt;
-        ///
-        ///	&lt;!-- The boss is not enraged anymore  --&gt;
-        ///	&lt;abnormality ingame=&quot;true&quot; trigger=&quot;Removed&quot; target=&quot;Boss&quot;&gt;
+        ///&lt;events&gt;	
+        ///	&lt;!-- Endurance debuff --&gt;
+        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; rewarn_timeout_seconds=&quot;5&quot; remaining_seconds_before_trigger=&quot;0&quot; trigger=&quot;MissingDuringFight&quot; target=&quot;Boss&quot;&gt;
         ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;8888888&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;200300&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;200301&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;200302&lt;/abnormality&gt;
         ///		&lt;/abnormalities&gt;
         ///		&lt;actions&gt;
         ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : off&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;185&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions&gt;
-        ///	&lt;/abnormality&gt;
-        ///
-        ///	&lt;!-- My [rest of string was truncated]&quot;;.
+        ///				&lt;balloon title_text=&quot;{abnormality_name}&quot; body_text=&quot;{abnormality_name}&quot; display_ti [rest of string was truncated]&quot;;.
         /// </summary>
         public static string events_lancer {
             get {
@@ -734,20 +719,18 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Adrenaline Rush --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Self&quot;&gt;
+        ///
+        ///	&lt;!-- Unleash berserker --&gt;
+        ///	&lt;abnormality ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Party&quot;&gt;
         ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;200701&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;200700&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;401705&lt;/abnormality&gt;
         ///		&lt;/abnormalities&gt;
         ///		&lt;actions&gt;
         ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
+        ///				&lt;balloon title_text=&quot;{abnormality_name}&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;1000&quot; /&gt;
+        ///				&lt;text_to_speech text=&quot;{abnormality_name}&quot; voice_gender=&quot;Male&quot; voice_age=&quot;Adult&quot;  voice_position=&quot;0&quot; volume=&quot;30&quot; rate=&quot;1&quot;/&gt;
         ///			&lt;/notify&gt;
-        ///		&lt;/actions&gt; [rest of string was truncated]&quot;;.
+        ///		&lt;/acti [rest of string was truncated]&quot;;.
         /// </summary>
         public static string events_mystic {
             get {
@@ -765,11 +748,11 @@ namespace Lang {
         ///		&lt;/abnormalities&gt;
         ///		&lt;actions&gt;
         ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name}&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;220&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        /// [rest of string was truncated]&quot;;.
+        ///				&lt;text_to_speech text=&quot;Focus&quot; voice_gender=&quot;Female&quot; voice_age=&quot;Adult&quot;  voice_position=&quot;0&quot; volume=&quot;80&quot; rate=&quot;+3&quot;/&gt;
+        ///			&lt;/notify&gt;
+        ///		&lt;/actions&gt;
+        ///	&lt;/abnormality&gt;
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_ninja {
             get {
@@ -780,17 +763,17 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///
-        ///	&lt;!-- Blessing of Shakan --&gt;
-        ///	&lt;abnormality active=&quot;false&quot; ingame=&quot;true&quot; rewarn_timeout_seconds=&quot;10&quot; remaining_seconds_before_trigger=&quot;40&quot; trigger=&quot;MissingDuringFight&quot; target=&quot;Party&quot;&gt;
+        ///	
+        ///	
+        ///	&lt;!-- Unleash berserker --&gt;
+        ///	&lt;abnormality ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Party&quot; ignore_classes=&quot;Berserker&quot;&gt;
         ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;805102&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;805101&lt;/abnormality&gt;
+        ///			&lt;abnormality&gt;401705&lt;/abnormality&gt;
         ///		&lt;/abnormalities&gt;
         ///		&lt;actions&gt;
         ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name}&quot; body_text=&quot;{player_name} {time_left}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps [rest of string was truncated]&quot;;.
+        ///				&lt;balloon title_text=&quot;{abnormality_name}&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;1000&quot; /&gt;
+        ///				&lt;text_to_speech text=&quot;{abnormality_name}&quot; voice_gender=&quot;Male&quot; voice_age=&quot;Adult&quot; voice_position=&quot;0&quot; volume=&quot;30&quot; rate [rest of string was truncated]&quot;;.
         /// </summary>
         public static string events_priest {
             get {
@@ -801,20 +784,7 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_reaper {
             get {
@@ -825,20 +795,7 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_slayer {
             get {
@@ -849,20 +806,7 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_sorcerer {
             get {
@@ -873,20 +817,7 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- Mystic contagion --&gt;
-        ///	&lt;abnormality active=&quot;true&quot; ingame=&quot;true&quot; trigger=&quot;Added&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;701700&lt;/abnormality&gt;
-        ///			&lt;abnormality&gt;701701&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : on&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;110&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions [rest of string was truncated]&quot;;.
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_valkyrie {
             get {
@@ -897,26 +828,20 @@ namespace Lang {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;
         ///&lt;events&gt;
-        ///	&lt;!-- The boss is not enraged anymore  --&gt;
-        ///	&lt;abnormality ingame=&quot;true&quot; trigger=&quot;Removed&quot; target=&quot;Boss&quot;&gt;
-        ///		&lt;abnormalities&gt;
-        ///			&lt;abnormality&gt;8888888&lt;/abnormality&gt;
-        ///		&lt;/abnormalities&gt;
-        ///		&lt;actions&gt;
-        ///			&lt;notify&gt;
-        ///				&lt;balloon title_text=&quot;{abnormality_name} : off&quot; body_text=&quot;{abnormality_name}&quot; display_time=&quot;3000&quot; /&gt;
-        ///				&lt;beeps&gt;
-        ///					&lt;beep frequency=&quot;185&quot; duration=&quot;500&quot;/&gt;
-        ///				&lt;/beeps&gt;
-        ///			&lt;/notify&gt;
-        ///		&lt;/actions&gt;
-        ///	&lt;/abnormality&gt;
-        ///	
-        ///	&lt;!-- End [rest of string was truncated]&quot;;.
+        ///&lt;/events&gt;.
         /// </summary>
         public static string events_warrior {
             get {
                 return ResourceManager.GetString("events_warrior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export packets logs.
+        /// </summary>
+        public static string ExportPacketLogs {
+            get {
+                return ResourceManager.GetString("ExportPacketLogs", resourceCulture);
             }
         }
         
@@ -1052,6 +977,15 @@ namespace Lang {
         public static string Hot {
             get {
                 return ResourceManager.GetString("Hot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hit/m.
+        /// </summary>
+        public static string HPM {
+            get {
+                return ResourceManager.GetString("HPM", resourceCulture);
             }
         }
         
@@ -1425,6 +1359,168 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show character.
+        /// </summary>
+        public static string RichPresenceShowCharacter {
+            get {
+                return ResourceManager.GetString("RichPresenceShowCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show location.
+        /// </summary>
+        public static string RichPresenceShowLocation {
+            get {
+                return ResourceManager.GetString("RichPresenceShowLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show party.
+        /// </summary>
+        public static string RichPresenceShowParty {
+            get {
+                return ResourceManager.GetString("RichPresenceShowParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show status.
+        /// </summary>
+        public static string RichPresenceShowStatus {
+            get {
+                return ResourceManager.GetString("RichPresenceShowStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lvl.
+        /// </summary>
+        public static string RpLevel {
+            get {
+                return ResourceManager.GetString("RpLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Various.
+        /// </summary>
+        public static string RpMultipleEnemies {
+            get {
+                return ResourceManager.GetString("RpMultipleEnemies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BG Queue.
+        /// </summary>
+        public static string RpPartyBg {
+            get {
+                return ResourceManager.GetString("RpPartyBg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In party.
+        /// </summary>
+        public static string RpPartyParty {
+            get {
+                return ResourceManager.GetString("RpPartyParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IMS.
+        /// </summary>
+        public static string RpPartyQueue {
+            get {
+                return ResourceManager.GetString("RpPartyQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In raid.
+        /// </summary>
+        public static string RpPartyRaid {
+            get {
+                return ResourceManager.GetString("RpPartyRaid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solo.
+        /// </summary>
+        public static string RpPartySolo {
+            get {
+                return ResourceManager.GetString("RpPartySolo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In battleground matching.
+        /// </summary>
+        public static string RpStatusBattlegroundMatch {
+            get {
+                return ResourceManager.GetString("RpStatusBattlegroundMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Character selection.
+        /// </summary>
+        public static string RpStatusCharSelect {
+            get {
+                return ResourceManager.GetString("RpStatusCharSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In dungeon matching.
+        /// </summary>
+        public static string RpStatusDungeonMatch {
+            get {
+                return ResourceManager.GetString("RpStatusDungeonMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fight.
+        /// </summary>
+        public static string RpStatusFight {
+            get {
+                return ResourceManager.GetString("RpStatusFight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idle.
+        /// </summary>
+        public static string RpStatusIdle {
+            get {
+                return ResourceManager.GetString("RpStatusIdle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LFG.
+        /// </summary>
+        public static string RpStatusLfg {
+            get {
+                return ResourceManager.GetString("RpStatusLfg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playing.
+        /// </summary>
+        public static string RpStatusPlaying {
+            get {
+                return ResourceManager.GetString("RpStatusPlaying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Say color.
         /// </summary>
         public static string SayColor {
@@ -1461,7 +1557,7 @@ namespace Lang {
         ///# Example:
         ///# 111.22.33.44 NA VPN Server 1
         ///#
-        ///# Current possible regions: EU, NA, RU, KR, TW, JP
+        ///# Current possible regions: EU, NA, RU, KR, KR-PTS, TW, THA, JP, JP-C
         ///#
         ///# Lines starting with &apos;#&apos; are ignored
         ///# Place servers below the next line
@@ -1852,6 +1948,15 @@ namespace Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time sync error.
+        /// </summary>
+        public static string Time_sync_error {
+            get {
+                return ResourceManager.GetString("Time_sync_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TOTAL.
         /// </summary>
         public static string TotalEncounter {
@@ -1884,6 +1989,15 @@ namespace Lang {
         public static string Unable_to_get_key_from_string {
             get {
                 return ResourceManager.GetString("Unable_to_get_key_from_string", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown client version, meter require update to continue working: .
+        /// </summary>
+        public static string Unknown_client_version {
+            get {
+                return ResourceManager.GetString("Unknown_client_version", resourceCulture);
             }
         }
         

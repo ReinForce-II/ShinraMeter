@@ -1,2 +1,13 @@
+\items\
 \config\
+\acc_benefits\
+\achi_grade\
+\achievements\
+\dungeons\
+\equip_exp\
+\guild_quests\
+\quests\
+\social\
+\sys_msg\
+dungeons-def
 .git

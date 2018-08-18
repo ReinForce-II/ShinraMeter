@@ -1,5 +1,7 @@
 ﻿using Data;
+using DiscordRPC;
 using Tera.Game.Messages;
+using RichPresence = Tera.RichPresence.RichPresence;
 
 namespace DamageMeter.Processing
 {
@@ -7,8 +9,9 @@ namespace DamageMeter.Processing
     {
         internal static void Process(SUserStatus message)
         {
+            if (message.User != PacketProcessor.Instance.EntityTracker.MeterUser.Id) { return; }
+            
             if (BasicTeraData.Instance.WindowData.IdleResetTimeout <= 0) { return; }
-            if (message.User != NetworkController.Instance.EntityTracker.MeterUser.Id) { return; }
             if (message.Status != 1) { DamageTracker.Instance.LastIdleStartTime = message.Time.Ticks; }
         }
     }

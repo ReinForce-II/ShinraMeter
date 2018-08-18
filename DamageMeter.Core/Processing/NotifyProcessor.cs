@@ -8,11 +8,14 @@ using Data.Actions.Notify;
 using Data.Actions.Notify.SoundElements;
 using Data.Events;
 using Data.Events.Abnormality;
+using DiscordRPC;
 using Lang;
 using Tera.Game;
 using Tera.Game.Abnormality;
 using Tera.Game.Messages;
 using Action = Data.Actions.Action;
+using EventType = Data.EventType;
+using RichPresence = Tera.RichPresence.RichPresence;
 
 namespace DamageMeter.Processing
 {
@@ -70,7 +73,7 @@ namespace DamageMeter.Processing
         {
             if (BasicTeraData.Instance.WindowData.ShowAfkEventsIngame || !TeraWindow.IsTeraActive())
             {
-                NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(LP.PartyMatchingSuccess, LP.PartyMatchingSuccess, EventType.MatchingSuccess));
+                PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(LP.PartyMatchingSuccess, LP.PartyMatchingSuccess, EventType.MatchingSuccess));
             }
         }
 
@@ -78,7 +81,7 @@ namespace DamageMeter.Processing
         {
             if (message.Count == 1 && (BasicTeraData.Instance.WindowData.ShowAfkEventsIngame || !TeraWindow.IsTeraActive()))
             {
-                NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(LP.CombatReadyCheck, LP.CombatReadyCheck, EventType.ReadyCheck));
+                PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(LP.CombatReadyCheck, LP.CombatReadyCheck, EventType.ReadyCheck));
             }
         }
 
@@ -86,7 +89,7 @@ namespace DamageMeter.Processing
         {
             if (BasicTeraData.Instance.WindowData.ShowAfkEventsIngame || !TeraWindow.IsTeraActive())
             {
-                NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(message.PlayerName + " " + LP.ApplyToYourParty,
+                PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(message.PlayerName + " " + LP.ApplyToYourParty,
                     LP.Class + ": " + LP.ResourceManager.GetString(message.PlayerClass.ToString(), LP.Culture) + Environment.NewLine + LP.Lvl + ": " + message.Lvl +
                     Environment.NewLine, EventType.OtherUserApply));
             }
@@ -103,7 +106,7 @@ namespace DamageMeter.Processing
         {
             if (BasicTeraData.Instance.WindowData.ShowAfkEventsIngame || !TeraWindow.IsTeraActive())
             {
-                NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(LP.Trading + ": " + message.PlayerName,
+                PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(LP.Trading + ": " + message.PlayerName,
                     LP.SellerPrice + ": " + Tera.Game.Messages.S_TRADE_BROKER_DEAL_SUGGESTED.Gold(message.SellerPrice) + Environment.NewLine + LP.OfferedPrice +
                     ": " + Tera.Game.Messages.S_TRADE_BROKER_DEAL_SUGGESTED.Gold(message.OfferedPrice), EventType.Broker));
             }
@@ -115,15 +118,15 @@ namespace DamageMeter.Processing
             {
                 if (message.Type == Tera.Game.Messages.S_REQUEST_CONTRACT.RequestType.PartyInvite)
                 {
-                    NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(LP.PartyInvite + ": " + message.Sender, message.Sender, EventType.PartyInvite));
+                    PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(LP.PartyInvite + ": " + message.Sender, message.Sender, EventType.PartyInvite));
                 }
                 else if (message.Type == Tera.Game.Messages.S_REQUEST_CONTRACT.RequestType.TradeRequest)
                 {
-                    NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(LP.Trading + ": " + message.Sender, message.Sender, EventType.Trade));
+                    PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(LP.Trading + ": " + message.Sender, message.Sender, EventType.Trade));
                 }
                 else if (!Enum.IsDefined(typeof(S_REQUEST_CONTRACT.RequestType), (int) message.Type))
                 {
-                    NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(LP.ContactTry, LP.ContactTry, EventType.GenericContract));
+                    PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(LP.ContactTry, LP.ContactTry, EventType.GenericContract));
                 }
             }
         }
@@ -131,13 +134,13 @@ namespace DamageMeter.Processing
         internal void AbnormalityNotifierMissing()
         {
             if (!BasicTeraData.Instance.WindowData.EnableChat) { return; }
-            var meterUser = NetworkController.Instance.EntityTracker.MeterUser;
+            var meterUser = PacketProcessor.Instance.EntityTracker.MeterUser;
             var bossIds = _lastBosses.Where(x => x.Value > 0).Select(x => x.Key).ToList();
             if (meterUser == null || !bossIds.Any()) { return; }
-            if (NetworkController.Instance.AbnormalityStorage.DeadOrJustResurrected(NetworkController.Instance.PlayerTracker.Me())) { return; }
+            if (PacketProcessor.Instance.AbnormalityStorage.DeadOrJustResurrected(PacketProcessor.Instance.PlayerTracker.Me())) { return; }
             var teraActive = TeraWindow.IsTeraActive();
             var time = DateTime.Now;
-            var bossList = bossIds.Select(x => (NpcEntity) NetworkController.Instance.EntityTracker.GetOrNull(x)).ToList();
+            var bossList = bossIds.Select(x => (NpcEntity) PacketProcessor.Instance.EntityTracker.GetOrNull(x)).ToList();
 
             foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities)
             {
@@ -160,10 +163,10 @@ namespace DamageMeter.Processing
                     BasicTeraData.Instance.WindowData.DisablePartyEvent) { continue; }
                 if (abnormalityEvent.Target == AbnormalityTargetType.Party)
                 {
-                    foreach (var player in NetworkController.Instance.PlayerTracker.PartyList())
+                    foreach (var player in PacketProcessor.Instance.PlayerTracker.PartyList())
                     {
                         if (player.OutOfRange) { continue; }
-                        if (NetworkController.Instance.AbnormalityStorage.DeadOrJustResurrected(NetworkController.Instance.PlayerTracker.GetOrUpdate(player)))
+                        if (PacketProcessor.Instance.AbnormalityStorage.DeadOrJustResurrected(PacketProcessor.Instance.PlayerTracker.GetOrUpdate(player)))
                         {
                             continue;
                         }
@@ -172,11 +175,11 @@ namespace DamageMeter.Processing
                 }
                 if (abnormalityEvent.Target == AbnormalityTargetType.PartySelfExcluded)
                 {
-                    foreach (var player in NetworkController.Instance.PlayerTracker.PartyList())
+                    foreach (var player in PacketProcessor.Instance.PlayerTracker.PartyList())
                     {
                         if (player == meterUser) { continue; }
                         if (player.OutOfRange) { continue; }
-                        if (NetworkController.Instance.AbnormalityStorage.DeadOrJustResurrected(NetworkController.Instance.PlayerTracker.GetOrUpdate(player)))
+                        if (PacketProcessor.Instance.AbnormalityStorage.DeadOrJustResurrected(PacketProcessor.Instance.PlayerTracker.GetOrUpdate(player)))
                         {
                             continue;
                         }
@@ -185,16 +188,17 @@ namespace DamageMeter.Processing
                 }
 
 
-                foreach (var entityIdToCheck in entitiesIdToCheck)
-                {
-                    if (e.Key.NextChecks.ContainsKey(entityIdToCheck) && time < e.Key.NextChecks[entityIdToCheck]) { continue; }
+                foreach (var entityIdToCheck in entitiesIdToCheck) {
+                    if (!e.Key.NextChecks.ContainsKey(entityIdToCheck)) abnormalityEvent.NextChecks[entityIdToCheck] = time.AddSeconds(abnormalityEvent.RewarnTimeoutSeconds > 20 ? 0 : abnormalityEvent.RewarnTimeoutSeconds);
+                    if (time <= e.Key.NextChecks[entityIdToCheck]) { continue; }
 
                     TimeSpan? abnormalityTimeLeft = null;
                     var noAbnormalitiesMissing = false;
+                    var stack = 0;
 
                     foreach (var id in abnormalityEvent.Ids)
                     {
-                        var timeLeft = NetworkController.Instance.AbnormalityTracker.AbnormalityTimeLeft(entityIdToCheck, id.Key, id.Value);
+                        var timeLeft = PacketProcessor.Instance.AbnormalityTracker.AbnormalityTimeLeft(entityIdToCheck, id.Key, id.Value);
                         if (timeLeft >= abnormalityEvent.RemainingSecondBeforeTrigger * TimeSpan.TicksPerSecond)
                         {
                             noAbnormalitiesMissing = true;
@@ -204,13 +208,14 @@ namespace DamageMeter.Processing
                         {
                             abnormalityTimeLeft = TimeSpan.FromTicks(timeLeft);
                         }
+                        if (id.Value > 0) stack = Math.Max(stack, PacketProcessor.Instance.AbnormalityTracker.Stack(entityIdToCheck, id.Key));
                     }
 
                     if (noAbnormalitiesMissing) { continue; }
 
                     foreach (var type in abnormalityEvent.Types)
                     {
-                        var timeLeft = NetworkController.Instance.AbnormalityTracker.AbnormalityTimeLeft(entityIdToCheck, type);
+                        var timeLeft = PacketProcessor.Instance.AbnormalityTracker.AbnormalityTimeLeft(entityIdToCheck, type);
                         if (timeLeft >= abnormalityEvent.RemainingSecondBeforeTrigger * TimeSpan.TicksPerSecond)
                         {
                             noAbnormalitiesMissing = true;
@@ -234,7 +239,7 @@ namespace DamageMeter.Processing
                     {
                         if (a.GetType() != typeof(NotifyAction)) { continue; }
                         var notifyAction = ((NotifyAction) a).Clone();
-                        var player = NetworkController.Instance.EntityTracker.GetOrNull(entityIdToCheck) as UserEntity;
+                        var player = PacketProcessor.Instance.EntityTracker.GetOrNull(entityIdToCheck) as UserEntity;
                         if (notifyAction.Sound != null && notifyAction.Sound.GetType() == typeof(TextToSpeech))
                         {
                             var textToSpeech = (TextToSpeech) notifyAction.Sound;
@@ -248,6 +253,7 @@ namespace DamageMeter.Processing
                             else { textToSpeech.Text = textToSpeech.Text.Replace("{abnormality_name}", LP.NoCrystalBind); }
 
                             textToSpeech.Text = textToSpeech.Text.Replace("{time_left}", abnormalityTimeLeft?.Seconds.ToString() ?? "0");
+                            textToSpeech.Text = textToSpeech.Text.Replace("{stack}", stack.ToString());
                         }
 
                         if (notifyAction.Balloon != null)
@@ -267,6 +273,8 @@ namespace DamageMeter.Processing
                                 notifyAction.Balloon.Icon = "icon_items.q_closedspace_stone_05_tex";
                             }
                             notifyAction.Balloon.BodyText = notifyAction.Balloon.BodyText.Replace("{player_name}", player?.Name);
+                            notifyAction.Balloon.BodyText = notifyAction.Balloon.BodyText.Replace("{stack}", stack.ToString());
+                            notifyAction.Balloon.TitleText = notifyAction.Balloon.TitleText.Replace("{stack}", stack.ToString());
                             notifyAction.Balloon.TitleText = notifyAction.Balloon.TitleText.Replace("{player_name}", player?.Name);
 
                             if (abnormalityTimeLeft.HasValue)
@@ -282,7 +290,7 @@ namespace DamageMeter.Processing
                                 notifyAction.Balloon.BodyText = notifyAction.Balloon.BodyText.Replace("{time_left}", "0");
                             }
                         }
-                        NetworkController.Instance.FlashMessage.Add(new NotifyFlashMessage(notifyAction.Sound, notifyAction.Balloon, e.Key.Priority));
+                        PacketProcessor.Instance.FlashMessage.Add(new NotifyFlashMessage(notifyAction.Sound, notifyAction.Balloon, e.Key.Priority));
                     }
                     break;
                 }
@@ -291,12 +299,19 @@ namespace DamageMeter.Processing
 
         internal void UpdateMeterBoss(EachSkillResultServerMessage message)
         {
-            var source = NetworkController.Instance.EntityTracker.GetOrNull(message.Source) as UserEntity;
-            if (NetworkController.Instance.EntityTracker.MeterUser != source) { return; }
-            var target = NetworkController.Instance.EntityTracker.GetOrNull(message.Target) as NpcEntity;
-            if (target == null) { return; }
-            if (target.Info.Boss) { _lastBossMeterUser = target.Id; }
+            var source = PacketProcessor.Instance.EntityTracker.GetOrNull(message.Source) as UserEntity;
+            if (PacketProcessor.Instance.EntityTracker.MeterUser != source) { return; }
+            UpdateMeterBoss(message.Target);
         }
+
+        internal void UpdateMeterBoss(EntityId entityId)
+        {
+            var npc = PacketProcessor.Instance.EntityTracker.GetOrNull(entityId) as NpcEntity;
+            if (npc == null) { return; }
+            if (npc.Info.Boss) { _lastBossMeterUser = npc.Id; }
+        }
+
+        
 
         internal void AbnormalityNotifierAdded(Abnormality ab, bool newStack)
         {
@@ -315,16 +330,17 @@ namespace DamageMeter.Processing
         internal void SkillReset(int skillId, CrestType type)
         {
             if (type != CrestType.Reset) { return; }
-            var meterUser = NetworkController.Instance.EntityTracker.MeterUser;
-            var bossIds = _lastBosses.Where(x => x.Value > 0).Select(x => x.Key).ToList();
-            if (meterUser == null || !bossIds.Any()) { return; }
+            var meterUser = PacketProcessor.Instance.EntityTracker.MeterUser;
+            //var bossIds = _lastBosses.Where(x => x.Value > 0).Select(x => x.Key).ToList();
+            //if (meterUser == null || !bossIds.Any()) { return; }
+            if (meterUser == null) { return; }
             var teraActive = TeraWindow.IsTeraActive();
 
             foreach (var e in BasicTeraData.Instance.EventsData.Cooldown)
             {
                 if (e.Key.InGame != teraActive) { continue; }
                 var cooldownEvent = (CooldownEvent) e.Key;
-                if (cooldownEvent.SkillId != skillId) { continue; }
+                if (cooldownEvent.SkillId != 0 && cooldownEvent.SkillId != skillId) { continue; }
 
                 foreach (var a in e.Value)
                 {
@@ -333,15 +349,16 @@ namespace DamageMeter.Processing
                     var skill = BasicTeraData.Instance.SkillDatabase.GetOrNull(meterUser, skillId);
                     if (notifyAction.Balloon != null)
                     {
-                        notifyAction.Balloon.BodyText = notifyAction.Balloon.BodyText.Replace("{skill_name}", skill?.Name ?? skillId.ToString());
-                        notifyAction.Balloon.TitleText = notifyAction.Balloon.TitleText.Replace("{skill_name}", skill?.Name ?? skillId.ToString());
+                        notifyAction.Balloon.BodyText = notifyAction.Balloon.BodyText.Replace("{skill_name}", skill?.Name ?? skillId.ToString()).Replace("{skill_id}",skillId.ToString());
+                        notifyAction.Balloon.TitleText = notifyAction.Balloon.TitleText.Replace("{skill_name}", skill?.Name ?? skillId.ToString()).Replace("{skill_id}", skillId.ToString());
+                        notifyAction.Balloon.Icon = skill?.IconName??"";
                     }
                     if (notifyAction.Sound != null && notifyAction.Sound.GetType() == typeof(TextToSpeech))
                     {
                         var textToSpeech = (TextToSpeech) notifyAction.Sound;
                         textToSpeech.Text = textToSpeech.Text.Replace("{skill_name}", skill?.Name ?? skillId.ToString());
                     }
-                    NetworkController.Instance.FlashMessage.Add(new NotifyFlashMessage(notifyAction.Sound, notifyAction.Balloon, e.Key.Priority));
+                    PacketProcessor.Instance.FlashMessage.Add(new NotifyFlashMessage(notifyAction.Sound, notifyAction.Balloon, e.Key.Priority));
                 }
             }
         }
@@ -349,11 +366,11 @@ namespace DamageMeter.Processing
 
         private void AbnormalityNotifierCommon(EntityId target, int abnormalityId, AbnormalityTriggerType trigger, int stack)
         {
-            var meterUser = NetworkController.Instance.EntityTracker.MeterUser;
+            var meterUser = PacketProcessor.Instance.EntityTracker.MeterUser;
             var bossIds = _lastBosses.Where(x => x.Value > 0).Select(x => x.Key).ToList();
             if (meterUser == null || !bossIds.Any()) { return; }
             var teraActive = TeraWindow.IsTeraActive();
-            var bossList = bossIds.Select(x => (NpcEntity) NetworkController.Instance.EntityTracker.GetOrNull(x)).ToList();
+            var bossList = bossIds.Select(x => (NpcEntity) PacketProcessor.Instance.EntityTracker.GetOrNull(x)).ToList();
 
             foreach (var e in BasicTeraData.Instance.EventsData.AddedRemovedAbnormalities)
             {
@@ -375,13 +392,13 @@ namespace DamageMeter.Processing
                     BasicTeraData.Instance.WindowData.DisablePartyEvent) { continue; }
                 if (abnormalityEvent.Target == AbnormalityTargetType.Party)
                 {
-                    player = NetworkController.Instance.EntityTracker.GetOrNull(target) as UserEntity;
-                    if (player == null || !NetworkController.Instance.PlayerTracker.PartyList().Contains(player)) { continue; }
+                    player = PacketProcessor.Instance.EntityTracker.GetOrNull(target) as UserEntity;
+                    if (player == null || !PacketProcessor.Instance.PlayerTracker.PartyList().Contains(player)) { continue; }
                 }
                 if (abnormalityEvent.Target == AbnormalityTargetType.PartySelfExcluded)
                 {
-                    player = NetworkController.Instance.EntityTracker.GetOrNull(target) as UserEntity;
-                    if (player == null || !NetworkController.Instance.PlayerTracker.PartyList().Contains(player) || meterUser.Id == player.Id) { continue; }
+                    player = PacketProcessor.Instance.EntityTracker.GetOrNull(target) as UserEntity;
+                    if (player == null || !PacketProcessor.Instance.PlayerTracker.PartyList().Contains(player) || meterUser.Id == player.Id) { continue; }
                 }
 
                 if (player.OutOfRange) { continue; }
@@ -422,45 +439,55 @@ namespace DamageMeter.Processing
                         textToSpeech.Text = textToSpeech.Text.Replace("{abnormality_name}", abnormality.Name);
                         textToSpeech.Text = textToSpeech.Text.Replace("{stack}", stack.ToString());
                     }
-                    NetworkController.Instance.FlashMessage.Add(new NotifyFlashMessage(notifyAction.Sound, notifyAction.Balloon, e.Key.Priority));
+                    PacketProcessor.Instance.FlashMessage.Add(new NotifyFlashMessage(notifyAction.Sound, notifyAction.Balloon, e.Key.Priority));
                 }
             }
         }
 
         internal void S_BOSS_GAGE_INFO(S_BOSS_GAGE_INFO message)
         {
-            NetworkController.Instance.EntityTracker.Update(message);
+            PacketProcessor.Instance.EntityTracker.Update(message);
+            RichPresence.Instance.HandleBossHp(message);
             HudManager.Instance.AddOrUpdateBoss(message);
             long newHp = 0;
             if (message.TotalHp != message.HpRemaining)
             {
                 newHp = (long) message.HpRemaining;
-                if (message.EntityId == _lastBossMeterUser) { _lastBossHpMeterUser = newHp; }
             }
+            if (message.EntityId == _lastBossMeterUser) { _lastBossHpMeterUser = newHp; }
             _lastBosses[message.EntityId] = newHp;
         }
 
         internal void SpawnMe(SpawnMeServerMessage message)
         {
+            HudManager.Instance.CurrentBosses.DisposeAll();
             S_SPAWN_ME.Process(message);
             _lastBosses = new Dictionary<EntityId, long>();
             _lastBossMeterUser = null;
             _lastBossHpMeterUser = 0;
-            foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities.Keys) { e.NextChecks = new Dictionary<EntityId, DateTime>(); }
+            if (BasicTeraData.Instance.EventsData.MissingAbnormalities?.Keys != null) {
+                foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities.Keys) e.NextChecks = new Dictionary<EntityId, DateTime>();
+            }
         }
 
         internal void S_LOAD_TOPO(S_LOAD_TOPO message)
         {
             HudManager.Instance.CurrentBosses.DisposeAll();
+            RichPresence.Instance.S_LOAD_TOPO(message);
             _lastBosses = new Dictionary<EntityId, long>();
             _lastBossMeterUser = null;
             _lastBossHpMeterUser = 0;
-            foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities?.Keys ?? new Dictionary<Event, List<Action>>().Keys ) { e.NextChecks = new Dictionary<EntityId, DateTime>(); }
+            if (BasicTeraData.Instance.EventsData.MissingAbnormalities?.Keys != null) {
+                foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities.Keys) e.NextChecks = new Dictionary<EntityId, DateTime>();
+            }
         }
 
         internal void SpawnUser(SpawnUserServerMessage message)
         {
-            foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities.Keys) { e.NextChecks[message.Id] = DateTime.UtcNow.AddSeconds(5); }
+            if (_lastBosses.Any(x => x.Value > 0))
+                if (BasicTeraData.Instance.EventsData.MissingAbnormalities?.Keys != null) {
+                    foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities.Keys) e.NextChecks[message.Id] = DateTime.UtcNow.AddSeconds(5);
+                }
         }
 
         internal void DespawnNpc(SDespawnNpc message)
@@ -472,6 +499,10 @@ namespace DamageMeter.Processing
                 _lastBossMeterUser = null;
                 _lastBossHpMeterUser = 0;
             }
+            if (!_lastBosses.Any(x => x.Value > 0))
+                if (BasicTeraData.Instance.EventsData.MissingAbnormalities?.Keys != null) {
+                    foreach (var e in BasicTeraData.Instance.EventsData.MissingAbnormalities.Keys) e.NextChecks = new Dictionary<EntityId, DateTime>();
+                }
         }
 
         internal void S_BEGIN_THROUGH_ARBITER_CONTRACT(S_BEGIN_THROUGH_ARBITER_CONTRACT message)
@@ -483,7 +514,7 @@ namespace DamageMeter.Processing
         {
             if (type == S_UPDATE_NPCGUILD.NpcGuildType.Vanguard && credits >= 8500)
             {
-                NetworkController.Instance.FlashMessage.Add(DefaultNotifyAction(LP.VanguardCredits + credits, LP.VanguardCredits + credits, EventType.VanguardCredits));
+                PacketProcessor.Instance.FlashMessage.Add(DefaultNotifyAction(LP.VanguardCredits + credits, LP.VanguardCredits + credits, EventType.VanguardCredits));
             }
         }
 
@@ -499,9 +530,9 @@ namespace DamageMeter.Processing
 
         internal void Resume(S_LOAD_TOPO sLoadTopo)
         {
-            NetworkController.Instance.PacketProcessing.Update();
-            NetworkController.Instance.RaisePause(false);
-            NetworkController.Instance.PacketProcessing.Process(sLoadTopo);
+            PacketProcessor.Instance.PacketProcessing.Update();
+            PacketProcessor.Instance.RaisePause(false);
+            PacketProcessor.Instance.PacketProcessing.Process(sLoadTopo);
         }
     }
 }

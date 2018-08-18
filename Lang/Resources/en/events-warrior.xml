@@ -1,22 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <events>
-	<!-- The boss is not enraged anymore  -->
-	<abnormality ingame="true" trigger="Removed" target="Boss">
-		<abnormalities>
-			<abnormality>8888888</abnormality>
-		</abnormalities>
-		<actions>
-			<notify>
-				<balloon title_text="{abnormality_name} : off" body_text="{abnormality_name}" display_time="3000" />
-				<beeps>
-					<beep frequency="185" duration="500"/>
-				</beeps>
-			</notify>
-		</actions>
-	</abnormality>
 	
 	<!-- Endurance debuff -->
-	<abnormality active="false" ingame="true" rewarn_timeout_seconds="5" remaining_seconds_before_trigger="0" trigger="MissingDuringFight" target="Boss">
+	<abnormality active="false" ingame="true" rewarn_timeout_seconds="5" remaining_seconds_before_trigger="0" trigger="MissingDuringFight" target="MyBoss">
 		<abnormalities>
 			<abnormality>101200</abnormality>
 			<abnormality>101220</abnormality>
@@ -27,56 +13,45 @@
 		</abnormalities>
 		<actions>
 			<notify>
-				<balloon title_text="{abnormality_name}" body_text="{abnormality_name}" display_time="3000" />
 				<beeps>
 					<beep frequency="392" duration="500"/>
 				</beeps>
 			</notify>
 		</actions>
 	</abnormality>
-	
-	<!-- Mystic contagion -->
-	<abnormality active="true" ingame="true" trigger="Added" target="Boss">
-		<abnormalities>
-			<abnormality>701700</abnormality>
-			<abnormality>701701</abnormality>
-		</abnormalities>
-		<actions>
-			<notify>
-				<balloon title_text="{abnormality_name} : on" body_text="{abnormality_name}" display_time="3000" />
-				<beeps>
-					<beep frequency="110" duration="500"/>
-				</beeps>
-			</notify>
-		</actions>
-	</abnormality>
-	<!-- Adrenaline Rush -->
-	<abnormality active="true" ingame="true" trigger="Added" target="Self">
-		<abnormalities>
-			<abnormality>200701</abnormality>
-			<abnormality>200700</abnormality>
-		</abnormalities>
-		<actions>
-			<notify>
-				<balloon title_text="{abnormality_name} : on" body_text="{abnormality_name}" display_time="3000" />
-				<beeps>
-					<beep frequency="110" duration="500"/>
-				</beeps>
-			</notify>
-		</actions>
-	</abnormality>
-
 	<!-- Endurance debuff (traverse cut) -->
-	<abnormality active="false" ingame="true" rewarn_timeout_seconds="8" remaining_seconds_before_trigger="0" trigger="MissingDuringFight" target="Boss">
+	<abnormality active="false" ingame="true" rewarn_timeout_seconds="8" remaining_seconds_before_trigger="2" trigger="MissingDuringFight" target="MyBoss">
 		<abnormalities>
 			<abnormality>101300</abnormality>
 		</abnormalities>
 		<actions>
 			<notify>
-				<balloon title_text="{abnormality_name}" body_text="{abnormality_name}" display_time="3000" />
-				<beeps>
-					<beep frequency="392" duration="500"/>
-				</beeps>
+				<text_to_speech text="{abnormality_name}" />
+			</notify>
+		</actions>
+	</abnormality>
+	
+	<!-- atk.speed stacks 13 -->
+	<abnormality ingame="true" rewarn_timeout_seconds="6" remaining_seconds_before_trigger="5" trigger="MissingDuringFight" target="Self">
+		<abnormalities>
+			<abnormality stack="13">101300</abnormality>
+		</abnormalities>
+		<actions>
+			<notify>
+				<text_to_speech text="{abnormality_name} {stack}" />
+			</notify>
+		</actions>
+	</abnormality>
+	
+	<!-- Stance -->
+	<abnormality ingame="true" rewarn_timeout_seconds="7" remaining_seconds_before_trigger="3" trigger="MissingDuringFight" target="Self">
+		<abnormalities>
+			<abnormality>100201</abnormality>
+			<abnormality>100103</abnormality>
+		</abnormalities>
+		<actions>
+			<notify>
+				<text_to_speech text="{abnormality_name}" />
 			</notify>
 		</actions>
 	</abnormality>

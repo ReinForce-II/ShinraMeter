@@ -19,8 +19,11 @@ namespace Data
         private static BasicTeraData _instance;
         private static readonly ILog Log = LogManager.GetLogger("ShinraMeter");
         private static int _errorCount = 10; //limit number of debug messages in one session
+        private static string _region = "Unknown";
         private readonly Func<string, TeraData> _dataForRegion;
 
+       
+        
         private BasicTeraData() : this(FindResourceDirectory()) { }
 
         private BasicTeraData(string resourceDirectory)
@@ -46,6 +49,9 @@ namespace Data
 
             ImageDatabase = new ImageDatabase(Path.Combine(ResourceDirectory, "img/"));
             Icons = new IconsDatabase(Path.Combine(ResourceDirectory, "data/"));
+            
+            // change later 
+            ;
         }
 
 
@@ -62,6 +68,7 @@ namespace Data
         public string ResourceDirectory { get; }
         public ServerDatabase Servers { get; }
         public IconsDatabase Icons { get; set; }
+        public MapData MapData { get; set; }
 
         private static IEnumerable<Server> GetServers(string filename)
         {
@@ -71,6 +78,7 @@ namespace Data
 
         public TeraData DataForRegion(string region)
         {
+            _region = region;
             return _dataForRegion(region);
         }
 
@@ -89,11 +97,11 @@ namespace Data
         public static void LogError(string error, bool local = false, bool debug = false)
         {
             if (debug && _errorCount-- <= 0) { return; }
+            Log.Error(error);
             Task.Run(() =>
             {
                 try
                 {
-                    Log.Error(error);
                     var name = (from x in new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem").Get().Cast<ManagementObject>()
                                    select x.GetPropertyValue("Version") + " Memory Total:" + x.GetPropertyValue("TotalVisibleMemorySize") + " Virtual:" +
                                           x.GetPropertyValue("TotalVirtualMemorySize") + " PhFree:" + x.GetPropertyValue("FreePhysicalMemory") + " VFree:" +
@@ -101,7 +109,7 @@ namespace Data
                     name = name + " CPU:" + ((from x in new ManagementObjectSearcher("SELECT * FROM Win32_Processor").Get().Cast<ManagementObject>()
                                                  select x.GetPropertyValue("Name") + " load:" + x.GetPropertyValue("LoadPercentage") + "%").FirstOrDefault() ??
                                              "processor unknown");
-                    error = $"##### (version={UpdateManager.Version}) running on {name}:\r\n" + (debug ? "##### Debug: " : "") + error;
+                    error = $"##### (version={UpdateManager.Version} Region={_region}) running on {name}:\r\n" + (debug ? "##### Debug: " : "") + error;
                     if (!Instance.WindowData.Debug || local) { return; }
 
                     using (var client = new HttpClient())

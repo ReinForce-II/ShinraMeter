@@ -12,6 +12,7 @@ namespace DamageMeter
         private readonly PlayerDamageDealt _playerDamageDealt;
         private readonly Entity _target;
         private readonly bool _timed;
+        private readonly NpcInfo _petinfo;
 
         private bool _playerDealtUnrelieable;
 
@@ -21,6 +22,7 @@ namespace DamageMeter
             _playerDamageDealt = playerDamageDealt;
             _timed = timed;
             _target = target;
+            _petinfo = skill.NpcInfo;
             Type = type;
             Skills = new Dictionary<Skill, List<Entity>>();
             Name = skill.ShortName;
@@ -49,9 +51,10 @@ namespace DamageMeter
             return true;
         }
 
+        public long Interval => _playerDamageDealt.Interval;
         public long Amount()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.Amount(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.Amount(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             return result.Sum();
         }
 
@@ -60,13 +63,13 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.Amount(source, _target, skillId, _timed, Type);
+                select SkillsData.Amount(source, _target, skillId, _timed, skill.Key.NpcInfo, Type);
             return result.Sum();
         }
 
         public long BiggestCrit()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.BiggestCrit(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.BiggestCrit(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Max();
         }
@@ -75,7 +78,7 @@ namespace DamageMeter
         {
             var result = from skill in Skills
                 from source in skill.Value
-                let res = SkillsData.LowestCrit(source, _target, skill.Key.Id, _timed, Type)
+                let res = SkillsData.LowestCrit(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type)
                 where res != 0
                 select res;
             var enumerable = result as long[] ?? result.ToArray();
@@ -87,7 +90,7 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.BiggestCrit(source, _target, skillId, _timed, Type);
+                select SkillsData.BiggestCrit(source, _target, skillId, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Max();
         }
@@ -101,12 +104,12 @@ namespace DamageMeter
         public long DamagePercent(int skillId)
         {
             if (_playerDealtUnrelieable) { throw new Exception("Player Dealt unrelieable"); }
-            return SkillsData.Amount(_playerDamageDealt.Source.User, _target, skillId, _timed, Type) * 100 / Amount();
+            return Amount(skillId) * 100 / Amount();
         }
 
         public long Hits()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.Hits(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.Hits(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             return result.Sum();
         }
 
@@ -115,13 +118,13 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.Hits(source, _target, skillId, _timed, Type);
+                select SkillsData.Hits(source, _target, skillId, _timed, skill.Key.NpcInfo, Type);
             return result.Sum();
         }
 
         public long White()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.White(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.White(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as int[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }
@@ -131,14 +134,14 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.White(source, _target, skill.Key.Id, _timed, Type);
+                select SkillsData.White(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as int[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }
 
         public long Crits()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.Crits(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.Crits(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as int[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }
@@ -148,7 +151,7 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.Crits(source, _target, skill.Key.Id, _timed, Type);
+                select SkillsData.Crits(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as int[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }
@@ -165,7 +168,7 @@ namespace DamageMeter
 
         public long BiggestHit()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.BiggestHit(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.BiggestHit(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Max();
         }
@@ -175,7 +178,7 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.BiggestHit(source, _target, skill.Key.Id, _timed, Type);
+                select SkillsData.BiggestHit(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Max();
         }
@@ -192,7 +195,7 @@ namespace DamageMeter
 
         public long AmountWhite()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.AmountWhite(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.AmountWhite(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }
@@ -202,14 +205,14 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.AmountWhite(source, _target, skill.Key.Id, _timed, Type);
+                select SkillsData.AmountWhite(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }
 
         public long AmountCrit()
         {
-            var result = from skill in Skills from source in skill.Value select SkillsData.AmountCrit(source, _target, skill.Key.Id, _timed, Type);
+            var result = from skill in Skills from source in skill.Value select SkillsData.AmountCrit(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }
@@ -219,7 +222,7 @@ namespace DamageMeter
             var result = from skill in Skills
                 where skill.Key.Id == skillId
                 from source in skill.Value
-                select SkillsData.AmountCrit(source, _target, skill.Key.Id, _timed, Type);
+                select SkillsData.AmountCrit(source, _target, skill.Key.Id, _timed, skill.Key.NpcInfo, Type);
             var enumerable = result as long[] ?? result.ToArray();
             return !enumerable.Any() ? 0 : enumerable.Sum();
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,9 +10,10 @@ using DamageMeter.AutoUpdate;
 using DamageMeter.D3D9Render;
 using Data;
 using Lang;
-using Newtonsoft.Json;
 using System.Windows.Media.Animation;
 using System.Collections.Generic;
+using DamageMeter.Sniffing;
+using Tera.RichPresence;
 
 namespace DamageMeter.UI
 {
@@ -68,12 +68,13 @@ namespace DamageMeter.UI
             PartyEvent.Status = BasicTeraData.Instance.WindowData.DisablePartyEvent;
             ShowAfkIventsIngame.Status = BasicTeraData.Instance.WindowData.ShowAfkEventsIngame;
             MuteSound.Status = BasicTeraData.Instance.WindowData.MuteSound;
+            DisplayTimerOnAggro.Status = BasicTeraData.Instance.WindowData.DisplayTimerBasedOnAggro;
             ShowSelfOnTop.Status = BasicTeraData.Instance.WindowData.MeterUserOnTop;
             IdleRTOSpinner.Value = BasicTeraData.Instance.WindowData.IdleResetTimeout;
             NoPaste.Status = BasicTeraData.Instance.WindowData.NoPaste;
             NoAbnormalsInHUD.Status = BasicTeraData.Instance.WindowData.NoAbnormalsInHUD;
             OverlaySwitch.Status = BasicTeraData.Instance.WindowData.EnableOverlay;
-            ChatSettingsVisible(BasicTeraData.Instance.WindowData.EnableChat);
+            DisplayOnlyBossHitByMeterUser.Status = BasicTeraData.Instance.WindowData.DisplayOnlyBossHitByMeterUser;
             //PerformanceTabIcon.Source = BasicTeraData.Instance.ImageDatabase.Performance.Source;
             SettingsTabIcon.Source = BasicTeraData.Instance.ImageDatabase.Settings.Source;
             //LinksTabIcon.Source = BasicTeraData.Instance.ImageDatabase.Links.Source;
@@ -89,14 +90,24 @@ namespace DamageMeter.UI
 
             GitHubIcon.Source = BasicTeraData.Instance.ImageDatabase.GitHub.Source;
             DiscordIcon.Source = BasicTeraData.Instance.ImageDatabase.Discord.Source;
+            ClickThrou.Status = BasicTeraData.Instance.WindowData.ClickThrou;
+            ExportPacketLog.Status = BasicTeraData.Instance.WindowData.PacketsCollect;
             //RankSitesIcon.Source = BasicTeraData.Instance.ImageDatabase.Cloud.Source;
             //MoongourdIcon.Source = BasicTeraData.Instance.ImageDatabase.Moongourd.Source;
             //TeralogsIcon.Source = BasicTeraData.Instance.ImageDatabase.Teralogs.Source;
+            
+            RpEnabled.Status = BasicTeraData.Instance.WindowData.EnableRichPresence;
+            RichPresenceShowLocation.Status = BasicTeraData.Instance.WindowData.RichPresenceShowLocation;
+            RichPresenceShowCharacter.Status = BasicTeraData.Instance.WindowData.RichPresenceShowCharacter;
+            RichPresenceShowStatus.Status = BasicTeraData.Instance.WindowData.RichPresenceShowStatus;
+            RichPresenceShowParty.Status = BasicTeraData.Instance.WindowData.RichPresenceShowParty;
+            ChatSettingsVisible(BasicTeraData.Instance.WindowData.EnableChat);
+            RPSettingsVisible(BasicTeraData.Instance.WindowData.EnableRichPresence);
         }
 
         private void ResetAction(object sender, RoutedEventArgs e)
         {
-            NetworkController.Instance.NeedToReset = true;
+            PacketProcessor.Instance.NeedToReset = true;
         }
 
         private void CloseAction(object sender, RoutedEventArgs e)
@@ -142,14 +153,14 @@ namespace DamageMeter.UI
 
         private void ExcelExportAction(object sender, RoutedEventArgs e)
         {
-            NetworkController.Instance.NeedToExport = DataExporter.Dest.Excel | DataExporter.Dest.Manual;
+            PacketProcessor.Instance.NeedToExport = DataExporter.Dest.Excel | DataExporter.Dest.Manual;
         }
         private long _lastSend;
 
         private void SiteExportAction(object sender, RoutedEventArgs e)
         {
             if (_lastSend + TimeSpan.TicksPerSecond * 60 >= DateTime.Now.Ticks) { return; }
-            NetworkController.Instance.NeedToExport = DataExporter.Dest.Site;
+            PacketProcessor.Instance.NeedToExport = DataExporter.Dest.Site;
             _lastSend = DateTime.Now.Ticks;
         }
 
@@ -210,12 +221,12 @@ namespace DamageMeter.UI
 
         private void EnableClickThrou(object sender, RoutedEventArgs e)
         {
-            NetworkController.Instance.SwitchClickThrou(true);
+            PacketProcessor.Instance.SwitchClickThrou(true);
         }
 
         private void DisableClickThrou(object sender, RoutedEventArgs e)
         {
-            NetworkController.Instance.SwitchClickThrou(false);
+            PacketProcessor.Instance.SwitchClickThrou(false);
         }
 
         private void EnablePartyOnly(object sender, RoutedEventArgs e)
@@ -337,12 +348,16 @@ namespace DamageMeter.UI
         {
             BasicTeraData.Instance.WindowData.EnableChat = true;
             ChatSettingsVisible(true);
+            
+            RichPresence.Instance.Update();
         }
 
         private void DisableChat(object sender, RoutedEventArgs e)
         {
             BasicTeraData.Instance.WindowData.EnableChat = false;
             ChatSettingsVisible(false);
+            
+            RichPresence.Instance.Deinitialize();
         }
 
         private void ChatSettingsVisible(bool show)
@@ -364,6 +379,24 @@ namespace DamageMeter.UI
             PartyEvent.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, an);
 
             ColorSettingsContainer.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, an);
+
+            RPSettingsPanel.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, an);
+        }
+
+        private void RPSettingsVisible(bool show) {
+            DoubleAnimation an;
+            if (show)
+            {
+                an = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(_animationSpeed)) { EasingFunction = new QuadraticEase() };
+            }
+            else
+            {
+                an = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(_animationSpeed)) { EasingFunction = new QuadraticEase() };
+            }
+            RichPresenceShowCharacter.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, an);
+            RichPresenceShowLocation.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, an);
+            RichPresenceShowParty.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, an);
+            RichPresenceShowStatus.LayoutTransform.BeginAnimation(ScaleTransform.ScaleYProperty, an);
         }
 
         private void EnableCopyInspect(object sender, RoutedEventArgs e)
@@ -480,11 +513,7 @@ namespace DamageMeter.UI
         {
             gitPopup.IsOpen = false;
         }
-        private void rankPopup_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //rankPopup.IsOpen = false;
-        }
-
+ 
         private void EnableOverlay(object sender, RoutedEventArgs e)
         {
             BasicTeraData.Instance.WindowData.EnableOverlay = true;
@@ -500,25 +529,110 @@ namespace DamageMeter.UI
             render.Dispose();
         }
 
-        private void sitesButton_Click(object sender, RoutedEventArgs e)
-        {
-            //rankPopup.Placement = PlacementMode.Bottom;
-            //rankPopup.PlacementTarget = sitesButton;
-            //var h = rankPopup.Height;
-            //rankPopup.Height = 0;
-            //var an = new DoubleAnimation(0, h, TimeSpan.FromMilliseconds(200)) { EasingFunction = new QuadraticEase() };
-            //rankPopup.IsOpen = true;
-            //rankPopup.BeginAnimation(HeightProperty, an);
-
-        }
-
         private void AddServerButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var server = new DamageMeter.TeraDpsApi.DpsServer(new DpsServerData(null, null, null, null, null, true), false);
+            var server = new TeraDpsApi.DpsServer(new DpsServerData(null, null, null, null, null, true), false);
             BasicTeraData.Instance.WindowData.DpsServers.Add(server.Data);
             DataExporter.DpsServers.Add(server);
             DpsServer dpsServerUi = new DpsServer(server, this);
             DpsServers.Children.Add(dpsServerUi);
         }
+
+        private void DisplayOnlyBossHitByMeterUser_On(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.DisplayOnlyBossHitByMeterUser = true;
+        }
+
+        private void DisplayOnlyBossHitByMeterUser_Off(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.DisplayOnlyBossHitByMeterUser = false;
+        }
+
+        private void ExportPacketLog_On(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.PacketsCollect = true;
+            TeraSniffer.Instance.EnableMessageStorage = true;
+        }
+
+        private void ExportPacketLog_Off(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.PacketsCollect = false;
+            TeraSniffer.Instance.EnableMessageStorage = false;
+        }
+
+        private void DisplayTimerOnAggro_On(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.DisplayTimerBasedOnAggro = true;
+        }
+
+        private void DisplayTimerOnAggro_Off(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.DisplayTimerBasedOnAggro = false;
+
+        }
+        
+        private void EnableRp(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.EnableRichPresence = true;
+            RPSettingsVisible(true);
+            RichPresence.Instance.Update();
+        }
+
+        private void DisableRp(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.EnableRichPresence = false;
+            RPSettingsVisible(false);
+            RichPresence.Instance.Deinitialize();
+        }
+        
+        private void RichPresenceShowLocationEnable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowLocation = true;
+            RichPresence.Instance.Update();
+        }
+            
+        private void RichPresenceShowLocationDisable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowLocation = false;
+            RichPresence.Instance.Update();
+        }
+            
+        private void RichPresenceShowCharacterEnable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowCharacter = true;
+            RichPresence.Instance.Update();
+        }
+            
+        private void RichPresenceShowCharacterDisable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowCharacter = false;
+            RichPresence.Instance.Update();
+        }
+            
+        private void RichPresenceShowStatusEnable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowStatus = true;
+            RichPresence.Instance.Update();
+        }
+            
+        private void RichPresenceShowStatusDisable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowStatus = false;
+            RichPresence.Instance.Update();
+        }
+            
+        private void RichPresenceShowPartyEnable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowParty = true;
+            RichPresence.Instance.Update();
+        }
+            
+        private void RichPresenceShowPartyDisable(object sender, RoutedEventArgs e)
+        {
+            BasicTeraData.Instance.WindowData.RichPresenceShowParty = false;
+            RichPresence.Instance.Update();
+        }
+            
+        
     }
 }

@@ -10,6 +10,8 @@ using NetworkSniffer;
 using Tera;
 using Tera.Game;
 using Tera.Sniffing;
+using System.Diagnostics;
+using System.Threading;
 
 namespace DamageMeter.Sniffing
 {
@@ -44,6 +46,8 @@ namespace DamageMeter.Sniffing
         }
     
         public ConcurrentQueue<Message> Packets = new ConcurrentQueue<Message>();
+        private Queue<Message> PacketsCopyStorage;
+
         public int ServerProxyOverhead;
 
         private TeraSniffer()
@@ -89,6 +93,7 @@ namespace DamageMeter.Sniffing
 
         protected virtual void OnNewConnection(Server server)
         {
+            PacketsCopyStorage = EnableMessageStorage ? new Queue<Message>() : null;
             var handler = NewConnection;
             handler?.Invoke(server);
         }
@@ -102,6 +107,27 @@ namespace DamageMeter.Sniffing
         protected virtual void OnMessageReceived(Message message)
         {
             Packets.Enqueue(message);
+            PacketsCopyStorage?.Enqueue(message);
+        }
+
+        private bool _enableMessageStorage;
+        public bool EnableMessageStorage
+        {
+            get => _enableMessageStorage;
+            set
+            {
+                _enableMessageStorage = value;
+                if (!_enableMessageStorage) { PacketsCopyStorage = null; }
+            }
+        }
+
+        public Queue<Message> GetPacketsLogsAndStop()
+        {
+            var tmp = PacketsCopyStorage ?? new Queue<Message>();
+            EnableMessageStorage = false;
+            // Wait for thread to sync, more perf than concurrentQueue
+            Thread.Sleep(1);
+            return tmp;
         }
 
         protected virtual void OnWarning(string obj)

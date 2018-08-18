@@ -11,6 +11,7 @@ using Data;
 using Lang;
 using Tera.Game.Abnormality;
 using FontStyle = System.Drawing.FontStyle;
+using Tera.Game;
 
 namespace DamageMeter
 {
@@ -32,14 +33,19 @@ namespace DamageMeter
         public static void CopyInspect(string name)
         {
             string clip;
-            switch (NetworkController.Instance.Server.Region)
+            switch (PacketProcessor.Instance.Server.Region)
             {
                 case "TW":
                     clip = "/查看 ";
                     break;
                 case "JP":
+                case "JP-C":
                     clip = "/詳細確認 ";
                     break;
+                case "THA":
+                    clip = "/ดูอุปกรณ์ ";
+                    break;
+                case "KR-PTS":
                 case "KR":
                     clip = "/살펴보기 ";
                     break;
@@ -97,6 +103,14 @@ namespace DamageMeter
                     case "hits_received":
                         playerInfosOrdered = playersInfos.OrderBy(playerInfo => skills.HitsReceived(playerInfo.Source.User, entityInfo.Entity, timedEncounter));
                         break;
+                    case "deaths":
+                        playerInfosOrdered =
+                           playersInfos.OrderBy(playerInfo => abnormals.Get(playerInfo.Source).Death.Count(firstTick, lastTick));
+                        break;
+                    case "death_duration":
+                        playerInfosOrdered =
+                          playersInfos.OrderBy(playerInfo => abnormals.Get(playerInfo.Source).Death.Duration(firstTick, lastTick));
+                        break;
                     default:
                         Console.WriteLine("wrong value for orderby");
                         throw new Exception("wrong value for orderby");
@@ -125,6 +139,14 @@ namespace DamageMeter
                         playerInfosOrdered =
                             playersInfos.OrderByDescending(playerInfo => skills.HitsReceived(playerInfo.Source.User, entityInfo.Entity, timedEncounter));
                         break;
+                    case "deaths":
+                        playerInfosOrdered =
+                           playersInfos.OrderByDescending(playerInfo => abnormals.Get(playerInfo.Source).Death.Count(firstTick, lastTick));
+                        break;
+                    case "death_duration":
+                        playerInfosOrdered =
+                          playersInfos.OrderByDescending(playerInfo => abnormals.Get(playerInfo.Source).Death.Duration(firstTick, lastTick));
+                        break;
                     default:
                         Console.WriteLine("wrong value for orderby");
                         throw new Exception("wrong value for orderby");
@@ -140,20 +162,22 @@ namespace DamageMeter
 
             dpsString.Replace("{encounter}", name);
             var interval = TimeSpan.FromSeconds(lastHit - firstHit);
-            dpsString.Replace("{timer}", interval.ToString(@"mm\:ss"));
+            var timerType = "Aggro";
+            if (!BasicTeraData.Instance.WindowData.DisplayTimerBasedOnAggro) { timerType = "First hit"; }
+            dpsString.Replace("{timer}", timerType + ": "+ interval.ToString(@"mm\:ss"));
             dpsString.Replace("{partyDps}",
                 FormatHelpers.Instance.FormatValue(lastHit - firstHit > 0 ? entityInfo.TotalDamage / (lastHit - firstHit) : 0) + LP.PerSecond);
             dpsString.Replace("{enrage}", FormatHelpers.Instance.FormatPercent(enrageperc));
             dpsString.Replace("{debuff_list}",
                 string.Join(" | ",
-                    bossDebuff.Where(x => x.Key.Id != 8888888 && x.Value.Duration(firstTick, lastTick) > 0)
+                    bossDebuff.Where(x => x.Key.Id != BasicTeraData.Instance.HotDotDatabase.Enrage.Id && x.Value.Duration(firstTick, lastTick) > 0)
                         .OrderByDescending(x => x.Value.Duration(firstTick, lastTick, -1)).ToList()
                         .Select(x => x.Key.ShortName + (x.Value.MaxStack(firstTick, lastTick) > 1 ? "(" + x.Value.MaxStack(firstTick, lastTick) + ")" : "") + " " +
                                      FormatHelpers.Instance.FormatPercent((double) x.Value.Duration(firstTick, lastTick, -1) / (lastTick - firstTick)) + " (" +
                                      TimeSpan.FromTicks(x.Value.Duration(firstTick, lastTick, -1)).ToString(@"mm\:ss") + ") ")));
             dpsString.Replace("{debuff_list_p}",
                 string.Join(" | ",
-                    bossDebuff.Where(x => x.Key.Id != 8888888 && x.Value.Duration(firstTick, lastTick) > 0)
+                    bossDebuff.Where(x => x.Key.Id != BasicTeraData.Instance.HotDotDatabase.Enrage.Id && x.Value.Duration(firstTick, lastTick) > 0)
                         .OrderByDescending(x => x.Value.Duration(firstTick, lastTick, -1)).ToList()
                         .Select(x => x.Key.ShortName + (x.Value.MaxStack(firstTick, lastTick) > 1 ? "(" + x.Value.MaxStack(firstTick, lastTick) + ")" : "") + " " +
                                      FormatHelpers.Instance.FormatPercent((double) x.Value.Duration(firstTick, lastTick - 1) / (lastTick - firstTick)))));
@@ -200,13 +224,13 @@ namespace DamageMeter
                 playerHolder["{hits_received}"] =
                     FormatHelpers.Instance.FormatValue(skills.HitsReceived(playerStats.Source.User, entityInfo.Entity, timedEncounter));
                 playerHolder["{debuff_list}"] = string.Join(" | ",
-                    bossDebuff.Where(x => x.Key.Id != 8888888 && x.Value.InitialPlayerClass == playerStats.Source.Class && x.Value.Duration(firstTick, lastTick) > 0)
+                    bossDebuff.Where(x => x.Key.Id != BasicTeraData.Instance.HotDotDatabase.Enrage.Id && x.Value.InitialPlayerClass == playerStats.Source.Class && x.Value.Duration(firstTick, lastTick) > 0)
                         .OrderByDescending(x => x.Value.Duration(firstTick, lastTick, -1)).ToList()
                         .Select(x => x.Key.ShortName + (x.Value.MaxStack(firstTick, lastTick) > 1 ? "(" + x.Value.MaxStack(firstTick, lastTick) + ")" : "") + " " +
                                      FormatHelpers.Instance.FormatPercent((double) x.Value.Duration(firstTick, lastTick, -1) / (lastTick - firstTick)) + " (" +
                                      TimeSpan.FromTicks(x.Value.Duration(firstTick, lastTick, -1)).ToString(@"mm\:ss") + ") "));
                 playerHolder["{debuff_list_p}"] = string.Join(" | ",
-                    bossDebuff.Where(x => x.Key.Id != 8888888 && x.Value.InitialPlayerClass == playerStats.Source.Class && x.Value.Duration(firstTick, lastTick) > 0)
+                    bossDebuff.Where(x => x.Key.Id != BasicTeraData.Instance.HotDotDatabase.Enrage.Id && x.Value.InitialPlayerClass == playerStats.Source.Class && x.Value.Duration(firstTick, lastTick) > 0)
                         .OrderByDescending(x => x.Value.Duration(firstTick, lastTick, -1)).ToList()
                         .Select(x => x.Key.ShortName + (x.Value.MaxStack(firstTick, lastTick) > 1 ? "(" + x.Value.MaxStack(firstTick, lastTick) + ")" : "") + " " +
                                      FormatHelpers.Instance.FormatPercent((double) x.Value.Duration(firstTick, lastTick, -1) / (lastTick - firstTick))));

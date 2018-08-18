@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:l="clr-namespace:DamageMeter.UI"
              mc:Ignorable="d"
              d:DesignHeight="29"
              MinHeight="29"
@@ -26,16 +27,22 @@
                 </Setter>
             </Style>
         </Grid.Resources>
-        <Rectangle Focusable="False" PreviewMouseRightButtonDown="ShowSkills" MouseLeftButtonDown="DragWindow"
+        <Border Focusable="False" PreviewMouseRightButtonDown="ShowSkills" MouseLeftButtonDown="DragWindow"
                    x:Name="DpsIndicator"
-                   Fill="#2bf"
-                   Opacity="1" HorizontalAlignment="Left" Height="20" Margin="0,0,0,1"
-                   Stroke="Transparent" VerticalAlignment="Bottom"
-                   Width="0" >
-            <Rectangle.LayoutTransform>
-                <ScaleTransform ScaleY=".1"/>
-            </Rectangle.LayoutTransform>
-        </Rectangle>
+                    Opacity="1" HorizontalAlignment="Left" Height="Auto" Margin="0,0,0,1"
+                   VerticalAlignment="Stretch"
+                   Width="0" BorderThickness="0 0 0 2" >
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0 1">
+                    <GradientStop/>
+                    <GradientStop/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Border.LayoutTransform>
+                <ScaleTransform ScaleY="1"/>
+            </Border.LayoutTransform>
+        </Border>
 
         <Grid Focusable="False" PreviewMouseRightButtonDown="ShowSkills" MouseLeftButtonDown="DragWindow"
               x:Name="GridStats" HorizontalAlignment="Center" Width="Auto" MouseEnter="GridStats_MouseEnter" MouseLeave="GridStats_MouseLeave"
@@ -56,7 +63,26 @@
             <Label Focusable="False" Grid.Column="1" FontSize="14" VerticalAlignment="Center"
                    HorizontalContentAlignment="Left" Margin="2,0,0,0"
                    x:Name="LabelName" Foreground="GreenYellow"
-                   MinHeight="29" />
+                   MinHeight="29">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MainWindow}}, Path=HideNames4Binding.IsChecked}" Value="True">
+                                <!-- Add the BlurEffect -->
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <BlurEffect x:Name="blurEffect" Radius="7" KernelType="Box"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:MainWindow}}, Path=HideNames4Binding.IsChecked}" Value="False">
+                                <!-- Remove the BlurEffect -->
+                                <Setter Property="Effect" Value="{x:Null}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <Label Focusable="False" Grid.Column="2" FontSize="14" VerticalAlignment="Center"
                    HorizontalContentAlignment="Center"
                    x:Name="Spacer" Foreground="GreenYellow"

@@ -20,9 +20,9 @@ namespace DamageMeter.UI.HUD.Controls
 
         private readonly int AnimationTime = 350;
         private Boss _boss;
-        private float _currentHp;
+        private long _currentHp;
         private bool _enraged;
-        private float _maxHp;
+        private long _maxHp;
 
 
         private Color BaseHpColor = Color.FromRgb(0x00, 0x97, 0xce);
@@ -39,7 +39,7 @@ namespace DamageMeter.UI.HUD.Controls
         {
             InitializeComponent();
 
-            if (NetworkController.Instance.EntityTracker?.MeterUser?.RaceGenderClass.Class != PlayerClass.Valkyrie) RunemarksGrid.Visibility=Visibility.Collapsed;
+            if (PacketProcessor.Instance.EntityTracker?.MeterUser?.RaceGenderClass.Class != PlayerClass.Valkyrie) RunemarksGrid.Visibility=Visibility.Collapsed;
             SlideAnimation.EasingFunction = new QuadraticEase();
             ColorChangeAnimation.EasingFunction = new QuadraticEase();
             DoubleAnimation.EasingFunction = new QuadraticEase();
@@ -48,7 +48,7 @@ namespace DamageMeter.UI.HUD.Controls
             DoubleAnimation.Duration = TimeSpan.FromMilliseconds(AnimationTime);
         }
 
-        public float CurrentPercentage => _maxHp == 0 ? 0 : _currentHp / _maxHp * 100;
+        public float CurrentPercentage => _maxHp == 0 ? 0 : (float) _currentHp / _maxHp * 100;
 
         public float NextEnragePercentage
         {
@@ -156,7 +156,7 @@ namespace DamageMeter.UI.HUD.Controls
             }));
         }
 
-        private double ValueToLength(double value, double maxValue)
+        private double ValueToLength(long value, long maxValue)
         {
             if (maxValue == 0) { return 1; }
             var n = value / maxValue;

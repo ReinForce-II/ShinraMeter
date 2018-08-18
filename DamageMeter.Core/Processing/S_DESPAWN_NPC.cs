@@ -1,4 +1,5 @@
 ﻿using Tera.Game.Messages;
+using Tera.RichPresence;
 
 namespace DamageMeter.Processing
 {
@@ -6,9 +7,10 @@ namespace DamageMeter.Processing
     {
         internal S_DESPAWN_NPC(SDespawnNpc message)
         {
-            NetworkController.Instance.AbnormalityTracker.Update(message);
+            PacketProcessor.Instance.AbnormalityTracker.Update(message);
             NotifyProcessor.Instance.DespawnNpc(message);
-            DataExporter.AutomatedExport(message, NetworkController.Instance.AbnormalityStorage);
+            DataExporter.AutomatedExport(message, PacketProcessor.Instance.AbnormalityStorage);
+            RichPresence.Instance.DespawnNpc(message);
         }
     }
 }

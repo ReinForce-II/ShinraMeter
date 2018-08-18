@@ -567,7 +567,7 @@ Reset and paused until map change or relog.</value>
 # Example:
 # 111.22.33.44 NA VPN Server 1
 #
-# Current possible regions: EU, NA, RU, KR, TW, JP
+# Current possible regions: EU, NA, RU, KR, KR-PTS, TW, THA, JP, JP-C
 #
 # Lines starting with '#' are ignored
 # Place servers below the next line
@@ -697,4 +697,83 @@ Reset and paused until map change or relog.</value>
   <data name="AddDpsServer" xml:space="preserve">
     <value>Add DPS server</value>
   </data>
+  <data name="Display_only_boss_hit_by_meter_user" xml:space="preserve">
+    <value>Display only boss hit by meter user</value>
+  </data>
+  <data name="Unknown_client_version" xml:space="preserve">
+    <value>Unknown client version, meter require update to continue working: </value>
+  </data>
+  <data name="Blur_player_names" xml:space="preserve">
+    <value>Blur player names</value>
+  </data>
+  <data name="ExportPacketLogs" xml:space="preserve">
+    <value>Export packets logs</value>
+  </data>
+  <data name="Display_timer_aggro_or_firsthit" xml:space="preserve">
+    <value>Timer based on aggro</value>
+  </data>
+  <data name="HPM" xml:space="preserve">
+    <value>Hit/m</value>
+  </data>
+  <data name="Time_sync_error" xml:space="preserve">
+    <value>Time sync error</value>
+  </data>  
+  <data name="EnableRp" xml:space="preserve">
+    <value>Enable discord's Rich Presence</value>
+  </data>
+  <data name="RichPresenceShowLocation" xml:space="preserve">
+    <value>Show location</value>
+  </data>
+  <data name="RichPresenceShowCharacter" xml:space="preserve">
+    <value>Show character</value>
+  </data>
+  <data name="RichPresenceShowStatus" xml:space="preserve">
+    <value>Show status</value>
+  </data>
+  <data name="RichPresenceShowParty" xml:space="preserve">
+    <value>Show party</value>
+  </data>
+  <data name="RpStatusPlaying" xml:space="preserve">
+    <value>Playing</value>
+  </data>
+  <data name="RpStatusIdle" xml:space="preserve">
+    <value>Idle</value>
+  </data>
+  <data name="RpStatusFight" xml:space="preserve">
+    <value>Fight</value>
+  </data>
+  <data name="RpStatusLfg" xml:space="preserve">
+    <value>LFG</value>
+  </data>
+  <data name="RpStatusCharSelect" xml:space="preserve">
+    <value>Character selection</value>
+  </data>
+  <data name="RpStatusDungeonMatch" xml:space="preserve">
+    <value>In dungeon matching</value>
+  </data>
+  <data name="RpStatusBattlegroundMatch" xml:space="preserve">
+    <value>In battleground matching</value>
+  </data>
+  <data name="RpPartySolo" xml:space="preserve">
+    <value>Solo</value>
+  </data>
+  <data name="RpPartyParty" xml:space="preserve">
+    <value>In party</value>
+  </data>
+  <data name="RpPartyRaid" xml:space="preserve">
+    <value>In raid</value>
+  </data>
+  <data name="RpPartyBg" xml:space="preserve">
+    <value>BG Queue</value>
+  </data>
+  <data name="RpPartyQueue" xml:space="preserve">
+    <value>IMS</value>
+  </data>
+  <data name="RpLevel" xml:space="preserve">
+    <value>Lvl</value>
+  </data>
+  <data name="RpMultipleEnemies" xml:space="preserve">
+    <value>Various</value>
+  </data>
+  
 </root>

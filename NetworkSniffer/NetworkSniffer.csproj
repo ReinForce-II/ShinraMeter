@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NetworkSniffer</RootNamespace>
     <AssemblyName>NetworkSniffer</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -39,11 +39,11 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PacketDotNet, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PacketDotNet.0.15.0\lib\PacketDotNet.dll</HintPath>
+    <Reference Include="PacketDotNet, Version=0.19.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.0.19.1\lib\netstandard2.0\PacketDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="SharpPcap, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpPcap.4.3.0\lib\SharpPcap.dll</HintPath>
+    <Reference Include="SharpPcap, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.4.5.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,10 +67,6 @@
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{4b6aa9bd-cec2-4aa6-b35a-1acb2fa7767b}</Project>
       <Name>Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Lang\Lang.csproj">
-      <Project>{220fef0f-4a83-4ab8-9435-f9bc09b9039f}</Project>
-      <Name>Lang</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

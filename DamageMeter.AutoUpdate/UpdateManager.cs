@@ -10,7 +10,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Win32.TaskScheduler;
 
 namespace DamageMeter.AutoUpdate
 {
@@ -18,7 +17,7 @@ namespace DamageMeter.AutoUpdate
     {
         private static Dictionary<string, string> _hashes;
         private static Dictionary<string, string> _latest;
-        public static string Version = "2.03";
+        public static string Version = "2.51";
 
         public static string ExecutableDirectory => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -154,19 +153,6 @@ namespace DamageMeter.AutoUpdate
             });
         }
 
-        public static void RemoveShinraLauncher()
-        {
-            foreach (var process in Process.GetProcessesByName("ShinraLauncher")) { process.Kill(); }
-            using (TaskService taskService = new TaskService())
-            {
-                var task = taskService.GetTask("Shinra Launcher");
-                if (task == null)
-                    return;
-                task.Enabled=false;
-                taskService.RootFolder.DeleteTask("Shinra Launcher");
-            }
-        }
-
         internal static void CleanupRelease(Dictionary<string, string> hashes)
         {
             Array.ForEach(
@@ -185,7 +171,7 @@ namespace DamageMeter.AutoUpdate
         {
             using (var client = new WebClient())
             {
-                var compressed = await client.OpenReadTaskAsync(new Uri("http://diclah.com/~yukikoo/ShinraMeterV.sha1.zip")).ConfigureAwait(false);
+                var compressed = await client.OpenReadTaskAsync(new Uri("http://diclah.com/~yukikoo/ShinraMeterV.sha1.zip?seed="+DateTime.UtcNow.Ticks)).ConfigureAwait(false);
                 if (compressed == null) { return true; }
                 using (var stream = new MemoryStream())
                 {

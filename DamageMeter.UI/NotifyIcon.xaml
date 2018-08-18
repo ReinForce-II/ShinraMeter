@@ -7,7 +7,8 @@
              mc:Ignorable="d"
              xmlns:tb="http://www.hardcodet.net/taskbar"
              xmlns:l="clr-namespace:Lang;assembly=Lang"
-             xmlns:ui="clr-namespace:DamageMeter.UI">
+             xmlns:ui="clr-namespace:DamageMeter.UI"
+             >
     <UserControl.Resources>
 
     </UserControl.Resources>
@@ -100,9 +101,7 @@
                     <Button Grid.Column="7" ToolTip="GitHub" Name="gitButton" Click="gitButton_Click">
                         <Image x:Name="GitHubIcon" Grid.Column="1" Grid.Row="0" Margin="6" RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Button>
-                    <!--<Button Grid.Column="9" ToolTip="Sites" Name="sitesButton" Click="sitesButton_Click">
-                        <Image x:Name="RankSitesIcon" Grid.Column="1" Grid.Row="0" Margin="6" RenderOptions.BitmapScalingMode="HighQuality"/>
-                    </Button>-->
+
                     <Popup Name="gitPopup" StaysOpen="True" AllowsTransparency="True" MouseLeave="gitPopup_MouseLeave"  Height="150" >
                         <Grid Margin="16" Width="Auto" >
                             <Border Background="{StaticResource DarkCardColor}" Effect="{StaticResource MenuShadow-8dp}"  >
@@ -121,38 +120,7 @@
                         </Grid>
 
                     </Popup>
-                    <!--<Popup Name="rankPopup" StaysOpen="True" AllowsTransparency="True" MouseLeave="rankPopup_MouseLeave" Height="100" >
-                        <Grid Margin="16" Width="Auto" >
-                            <Border Background="{StaticResource DarkCardColor}" Effect="{StaticResource MenuShadow-8dp}" >
-                                <UniformGrid Margin="0" Columns="1" HorizontalAlignment="Stretch">
-                                    <Button Name="MoongourdLink" Click="MoongourdAction" HorizontalContentAlignment="Left">
-                                        <Grid HorizontalAlignment="Stretch" Margin="10,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image x:Name="MoongourdIcon" Grid.Column="0" Margin="6" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                            <TextBlock Text="moongourd.com" Grid.Column="1" VerticalAlignment="Center" Margin="0,6,6,6"/>
-                                        </Grid>
-                                    </Button>
-                                    <Button Name="TeralogsLink" Click="TeralogsAction" HorizontalContentAlignment="Left">
-                                        <Grid HorizontalAlignment="Stretch" Margin="10,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Image x:Name="TeralogsIcon" Grid.Column="0" Margin="6" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                            <TextBlock Text="teralogs.com" Grid.Column="1" VerticalAlignment="Center" Margin="0,6,6,6"/>
-                                        </Grid>
-                                    </Button>
-
-                                </UniformGrid>
-                            </Border>
-                        </Grid>
-
-                    </Popup>-->
-
+                  
                     <Button Grid.Column="8" Name="Discord" Click="DiscordAction" ToolTip="{x:Static l:LP.SystemTray_Discord}">
                         <StackPanel Orientation="Horizontal">
                             <Image x:Name="DiscordIcon" Grid.Column="1" Grid.Row="3"  Margin="6" RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -388,6 +356,14 @@
                                             <Border Style="{StaticResource SettingsCardHeader}"/>
                                             <TextBlock Style="{StaticResource SettingsCardHeaderText}" Text="UI settings" />
                                             <StackPanel Orientation="Vertical" Grid.Row="2" Margin="3">
+                                                <ui:MaterialSwitch Content="{x:Static l:LP.Display_timer_aggro_or_firsthit}" 
+                                                                   x:Name="DisplayTimerOnAggro"
+                                                                   On="DisplayTimerOnAggro_On"
+                                                                   Off="DisplayTimerOnAggro_Off" />
+                                                <ui:MaterialSwitch Content="{x:Static l:LP.Display_only_boss_hit_by_meter_user}" 
+                                                                   x:Name="DisplayOnlyBossHitByMeterUser"
+                                                                   On="DisplayOnlyBossHitByMeterUser_On"
+                                                                   Off="DisplayOnlyBossHitByMeterUser_Off" />
                                                 <ui:MaterialSwitch Content="{x:Static l:LP.EnableOverlay}" 
                                                                    x:Name="OverlaySwitch"
                                                                    On="EnableOverlay"
@@ -488,7 +464,10 @@
                                                           On="EnableDpsWebsiteExportAction"
                                                           Off="DisableDpsWebsiteExportAction" />
                                                 -->
-
+                                                <ui:MaterialSwitch Content="{x:Static l:LP.ExportPacketLogs}"
+                                                  x:Name="ExportPacketLog"
+                                                  On="ExportPacketLog_On"
+                                                  Off="ExportPacketLog_Off"  />
                                                 <StackPanel x:Name="DpsServers" Orientation="Vertical" Margin="0">
                                                     
                                                 </StackPanel>
@@ -626,6 +605,59 @@
                                             </StackPanel>
                                         </Grid>
 
+                                        <!-- Rich presence settings card -->
+                                        <Grid Margin="10,10,10,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <Border Style="{StaticResource SettingsCard}" />
+                                            <Border Style="{StaticResource SettingsCardHeader}"/>
+
+                                            <TextBlock Style="{StaticResource SettingsCardHeaderText}" Text="Rich presence settings" />
+                                            <StackPanel Orientation="Vertical" Grid.Row="2" Margin="3" Name="RPSettingsPanel">
+                                                <StackPanel.LayoutTransform>
+                                                    <ScaleTransform ScaleY="1"></ScaleTransform>
+                                                </StackPanel.LayoutTransform>
+                                                <ui:MaterialSwitch  Content="{x:Static l:LP.EnableRp}"
+                                                                    x:Name="RpEnabled" On="EnableRp" Off="DisableRp" >
+                                                    <ui:MaterialSwitch.LayoutTransform>
+                                                        <ScaleTransform ScaleY="1"></ScaleTransform>
+                                                    </ui:MaterialSwitch.LayoutTransform>
+                                                </ui:MaterialSwitch>
+                                                <ui:MaterialSwitch  Content="{x:Static l:LP.RichPresenceShowLocation}"
+                                                                    x:Name="RichPresenceShowLocation" On="RichPresenceShowLocationEnable"
+                                                                    Off="RichPresenceShowLocationDisable" >
+                                                    <ui:MaterialSwitch.LayoutTransform>
+                                                        <ScaleTransform ScaleY="1"></ScaleTransform>
+                                                    </ui:MaterialSwitch.LayoutTransform>
+                                                </ui:MaterialSwitch>
+                                                <ui:MaterialSwitch  Content="{x:Static l:LP.RichPresenceShowCharacter}"
+                                                                    x:Name="RichPresenceShowCharacter" On="RichPresenceShowCharacterEnable"
+                                                                    Off="RichPresenceShowCharacterDisable" >
+                                                    <ui:MaterialSwitch.LayoutTransform>
+                                                        <ScaleTransform ScaleY="1"></ScaleTransform>
+                                                    </ui:MaterialSwitch.LayoutTransform>
+                                                </ui:MaterialSwitch>
+                                                <ui:MaterialSwitch  Content="{x:Static l:LP.RichPresenceShowStatus}"
+                                                                    x:Name="RichPresenceShowStatus" On="RichPresenceShowStatusEnable"
+                                                                    Off="RichPresenceShowStatusDisable" >
+                                                    <ui:MaterialSwitch.LayoutTransform>
+                                                        <ScaleTransform ScaleY="1"></ScaleTransform>
+                                                    </ui:MaterialSwitch.LayoutTransform>
+                                                </ui:MaterialSwitch>
+                                                <ui:MaterialSwitch  Content="{x:Static l:LP.RichPresenceShowParty}"
+                                                                    x:Name="RichPresenceShowParty" On="RichPresenceShowPartyEnable"
+                                                                    Off="RichPresenceShowPartyDisable" >
+                                                    <ui:MaterialSwitch.LayoutTransform>
+                                                        <ScaleTransform ScaleY="1"></ScaleTransform>
+                                                    </ui:MaterialSwitch.LayoutTransform>
+                                                </ui:MaterialSwitch>
+
+                                            </StackPanel>
+                                        </Grid>
+                                        
                                         <!--Color settings card-->
                                         <Grid Margin="10,10,10,10">
                                             <Grid.Resources>
@@ -802,6 +834,8 @@
                                             </UniformGrid>
                                         </Grid>
 
+                                        
+                                        
                                     </StackPanel>
                                 </ScrollViewer>
                             </Grid>

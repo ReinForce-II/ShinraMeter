@@ -548,6 +548,9 @@
   <data name="NotifyCB" xml:space="preserve">
     <value>Оповещение о хранителях кристаллов</value>
   </data>
+  <data name="CombatReadyCheck" xml:space="preserve">
+    <value>Проверка готовности команды</value>
+  </data>
   <data name="JoyOfPartying" xml:space="preserve">
     <value>Сила в единстве 100%</value>
   </data>
@@ -562,7 +565,7 @@
 # Например:
 # 111.22.33.44 NA VPN Server 1
 #
-# Список возможных регионов: EU, NA, RU, KR, TW, JP
+# Список возможных регионов: EU, NA, RU, KR, KR-PTS, TW, THA, JP, JP-C
 #
 # Строки, начинающиеся с '#' игнорируются
 # Пропишите сервера ниже следующей линии
@@ -620,7 +623,7 @@
     <value>Resources\en\events-sorcerer.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="events_warrior" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\en\events-warrior.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>Resources\ru\events-warrior.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="DisablePartyEvents" xml:space="preserve">
     <value>Отключить оповещения про группу</value>
@@ -684,5 +687,17 @@
   </data>
   <data name="AddDpsServer" xml:space="preserve">
     <value>Добавить сервер статистики</value>
+  </data>
+  <data name="Display_only_boss_hit_by_meter_user" xml:space="preserve">
+    <value>Переключать боссов только при атаке пользователем метра</value>
+  </data>
+  <data name="Unknown_client_version" xml:space="preserve">
+    <value>Неизвестная версия клиента, для продолжения работы необходимо обновление: </value>
+  </data>
+  <data name="Blur_player_names" xml:space="preserve">
+    <value>Скрыть имена игроков</value>
+  </data>
+  <data name="HPM" xml:space="preserve">
+    <value>Удар/мин</value>
   </data>
 </root>
